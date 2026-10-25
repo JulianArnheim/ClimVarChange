@@ -287,6 +287,11 @@ plus TeX), and `bin/run_container.sh <script>` runs a script with the project mo
 `/usr/local/src/ClimVarChange`. Run it from the project root, since it mounts the current folder,
 e.g. `bin/run_container.sh Scripts/Utilities/setup_ClimVarChange_Folders.py`.
 
+## Figures
+
+The complete figure set is available as downloadable archives on the
+[latest release](https://github.com/JulianArnheim/ClimVarChange/releases/latest).
+
 ## Acknowledgments
 
 The data visualization approach used throughout this repository, particularly the plotting style
