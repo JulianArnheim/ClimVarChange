@@ -1,0 +1,10 @@
+.idea
+/Figures/*
+!/Figures/.keep
+/Data/
+.vscode/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class

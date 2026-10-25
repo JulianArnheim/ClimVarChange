@@ -1,0 +1,22 @@
+# Packages imported by the scripts under Scripts/. Installable with either
+# "conda install --file requirements.txt" or "pip install -r requirements.txt".
+#
+# Figures are rendered with LaTeX text (matplotlib.rc('text', usetex=True)), which requires
+# a working TeX installation on the system (dvipng and texlive) - not a Python package.
+
+numpy
+xarray
+netCDF4
+pandas
+matplotlib
+cartopy
+cmocean
+scipy
+statsmodels
+scikit-learn
+scikit-image
+shapely
+dask
+cdsapi
+requests
+paramiko

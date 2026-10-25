@@ -1,0 +1,500 @@
+CLIMVARCHANGE SCRIPT CONVENTIONS
+
+Rules are grouped into tiers by how consistently the codebase follows them.
+
+================================================================================
+TIER 1
+================================================================================
+
+1. SCRIPT LENGTH IS ALWAYS A MULTIPLE OF 25 LINES
+   Every script's line count is an exact multiple of 25, counted with Python's len(txt.splitlines()). Scripts
+   end on their last line of code with no trailing newline, so the count matches the "Ln" counter in most
+   editors and no empty line appears after the code. A raw `wc -l` count is one less for such files.
+
+2. MODULE DOCSTRING HEADER
+   Every script opens with a triple-quoted docstring in this exact shape:
+
+       """
+       <One-sentence description of what the script does, often citing source papers>
+
+       Notes
+       -----
+           Data : <URL or source description, one line per data source>
+           Author : Julian B Arnheim
+       """
+
+   "Notes" is always followed by five dashes. "Author : Julian B Arnheim" is always the final line. The
+   description opens with the verb of the script's category: "Plot" for plot_ scripts, "Calculate" for calc_,
+   "Retrieve" for download_, "Preprocess" for preprocess_, and "Create" for the folder setup script.
+   The "Data :" line is omitted where none is needed (CDS-API download scripts and the folder setup script) and
+   is otherwise repeated once per data source, so the ERA5/ERSSTv6/HadISST NAWH scripts have three.
+   The closing """ is followed by one blank line and then the "### Import modules" banner.
+
+3. BLANK LINE SPACING
+   Exactly one blank line between top-level function definitions, and one blank line before each top-level "### "
+   section banner. Inside a function, loop or if-block, a banner may follow its opening line directly, and
+   indented banners in short helper functions often have no blank line before them.
+
+4. SECTION-DIVIDER COMMENTS: "### Sentence case phrase"
+   Every logical block of a script is preceded by a one-line banner: three hashes, one space, then a short
+   sentence-case phrase (first word capitalized, acronyms such as SST or NAO kept uppercase) with no closing hashes
+   and no trailing punctuation. Exception: scripts organized as numbered steps or as multi-panel figures set off
+   each step or panel with a three-line box of hashes whose label line is closed by matching hashes. Steps use five
+   hashes and panels use three:
+       #################################################
+       ##### Step 1: Precompute annual zonal means #####
+       #################################################
+       #############################################
+       ### Left panel : Jet Latitude Index (JLI) ###
+       #############################################
+   Steps are used in Analysis/calc_BLO_Sectors_5d and calc_CCIs. Panels are used in Plots/Histograms/JLI,
+   plot_NOAA_ONI_RONI_Diff_Reanalysis.py, plot_Daily_Diagnostics_Reanalysis.py and
+   plot_Z500_MapNARegimes_Duration_Transitions_Reanalysis.py. A hash box is preceded by one blank line, like any banner.
+
+5. TIMING BOILERPLATE AND CONSOLE BANNERS
+   Every script defines a local format_time(seconds) helper, sets start_time = time.time() near
+   the top under an "### Start time" banner, and ends with:
+       print(f'---- Script Duration [HH:MM:SS]: {format_time(time.time() - start_time)} ----\n')
+   Every script also prints exactly one opening banner, on its own line with a blank line above and
+   below it, after the parameter blocks (Directories, Years, Epochs) and before the work begins:
+       print(f'\n---- <Title> ----\n')
+   Download banners read "Download <Source> <Cadence> <Variable>", preprocess banners "Preprocess <Source>[ <Variable>]".
+   The console output has exactly one blank line after the opening banner and exactly one before the end banner:
+     - The first print after the opening banner does not start with \n.
+     - Every print that can be the last one before the end banner (the last statement of a loop, both
+       branches of an if/else, an except branch, a helper called at the end) ends with exactly one \n,
+       with no space before it. This includes the Check Mark line, so looping scripts also print one
+       blank line between iterations. A bare print() can stand in for that \n at the end of a helper.
+     - When nothing is printed between the two banners, the opening banner's trailing \n supplies the blank line.
+   Exception: Utilities/setup_ClimVarChange_Folders.py prints one line per folder without a trailing \n and ends
+   with print(f'\n---- Script Duration [HH:MM:SS]: {format_time(time.time() - start_time)} ----\n'), whose
+   leading \n supplies the blank line before the end banner.
+
+6. NAMING: snake_case
+    Variables and functions are snake_case, with physical acronyms kept uppercase (ICEFRAC, SIA_by_month, compute_JLI_JSI,
+    load_CPC_index). There is no ALL_CAPS constants block: names such as AA_1 and NAO are ordinary physical variables.
+
+7. FILE NAMING PATTERN
+    Every script name starts with one of calc_, download_, preprocess_ or plot_.
+    Exception: Utilities/setup_ClimVarChange_Folders.py, the one-time folder setup script.
+      - download_ and preprocess_ scripts follow <verb>_<SOURCE/DATASET>_<domain>_<variable>_<cadence>.py.
+      - calc_ and plot_ scripts name the diagnostic, variable, region or variant and an optional year
+        range, and always end in _Reanalysis (also for scripts that combine several datasets).
+    Year ranges in script and figure names are written 1940–2025, with a Unicode en dash (U+2013),
+    never an ASCII hyphen. Hyphens inside a variable name (e.g. U925-U700) are ordinary hyphens.
+
+8. FIGURE EXPORT: dpi=1000
+    Every plt.savefig() call in the entire Plots/ tree passes only the path and dpi=1000. Exception: the two
+    plot_LocalAmpArctic scripts and plot_Z500_MapNARegimes_Duration_Transitions add bbox_inches='tight'.
+
+9. STRING FORMATTING: f-strings, with one standard exception
+    f-strings are used for all string construction. Strings are never joined with +: a LaTeX label is written
+    rf'\textbf{{{season_prefix}{first_year}–{year_max}}}', not r'\textbf{' + ... + '}', and a prefix is
+    f'{text_season} ', not text_season + ' '. Inside an f-string, a nested string uses the other quote type and no
+    backslashes, so the code also runs on Python versions before 3.12. A string that must hold a real newline next
+    to LaTeX uses a plain f-string with doubled backslashes (f'$\\alpha = {alpha:.2f}$\n$\\theta = {theta:.2f}$').
+    The r prefix (r'...', rf'...') is used only on a string that contains a backslash. Every print() call passes a
+    single f-string, also when it has no placeholders (print(f'Concatenated BLOs')) and in place of several
+    arguments (print(f'{first_year} | {text_months}') rather than print(first_year, '|', text_months)). A
+    conditional message may pick between two f-strings, and a bare print() may print a blank line.
+    Exceptions: the copy-pasted format_time() helper's return line keeps the older .format() style,
+        return '{:02d}:{:02d}:{:.2f}'.format(hours, minutes, seconds % 60)
+    the PIOMAS SFTP remote paths are joined with + (Rule 10), and pandas Series are concatenated with +
+    element by element (preprocess_PIOMAS_Arctic_SIV_Monthly.py builds its dates this way).
+
+10. PATH CONSTRUCTION: os.path
+    Paths are joined with os.path.join(dir, name), never with '+'. Every script resolves the project root
+    relative to __file__, with one '..' per folder between the script and the project root, so the code
+    runs from any folder name and on any machine without edits.
+    No script creates folders (no os.makedirs), except Utilities/setup_ClimVarChange_Folders.py, which builds the README's
+    Data/ and Figures/ layout once with os.makedirs(..., exist_ok=True). Every other script assumes that layout
+    exists. Exception: remote SFTP paths in the PIOMAS download are POSIX paths on the server and are built with '+'.
+
+11. print(), never the logging module
+    Progress reporting is always via print(): the opening and end banners of Rule 5, "Loaded"/"Saved" lines around
+    file I/O, and (in scripts that loop) a per-iteration "Check Mark [HH:MM:SS.SS]:" progress line.
+    File I/O messages take two forms:
+      - A load prints "Loaded: <what>", or "Loaded <Variable>: <what>" when a script loads several
+        variables: print(f'Loaded: {start_year}–{end_year}'), print(f'Loaded T: {start_year}–{end_year}').
+      - Every to_netcdf() call is followed by "Saved <path>" (a loop may list its files in one message after it),
+        with no colon after Saved, optionally followed by a comma and a short description, and in preprocess
+        scripts by \n and the saved Dataset: print(f'Saved {output_file}'),
+        print(f'Saved {zonal_file}, the ERA5 T Annual Zonal Means'), print(f'Saved {output_file}\n{ds}\n').
+    A message printed inside a loop below that loop's own header line (a decade, level or season/sector header) is
+    indented by two spaces. calc_CCIs sets its final Saved line off from the loop output with a leading \n.
+
+12. SHARED plt.rc() STYLING BLOCK
+    Every plotting script sets the same handful of plt.rc() calls before the first figure is created (once at the
+    top for single-figure scripts, or inside the loop for multi-figure scripts): text.usetex=True, font.family
+    sans-serif with Avant Garde, savefig.facecolor='w', and tick/axis colors chosen by figure type:
+      - dimgray axis edges, ticks and labels: timeseries, histograms, zonal means, and global, NH and
+        CONUS maps (T2M, SST, PRECT, SLP, UV).
+      - dimgray axis edges and ticks with black (k) tick labels: vertical profiles, scatter plots and bars.
+      - black (k) axis edges: Arctic polar maps (ICEFRAC, SIT, T2M local amplification).
+      - black (k) ticks and labels: North Atlantic and NH circulation maps (DDs, NARegimes, storm
+        track, U850 NAO), the baroclinicity and local-amplification line plots, and tables.
+    Exception: the two NAO/EA scatter plots (Plots/Scatter/AT/plot_NAO_EA_1950–2025_Reanalysis.py and
+    plot_NAO_EA_DJF_1950–2025_Reanalysis.py) use the timeseries colors: dimgray axis edges, ticks and labels.
+    The calls sit directly under a "### Figure design" banner and run in the order text, font, savefig, axes, xtick,
+    ytick. The black-tick scripts of the Spatial/DDs and Spatial/NARegimes folders, the storm-track and U850 NAO
+    maps, and the CCIs table set xtick and ytick before axes. Either order gives the same figure.
+    Scripts do not also set mpl.rcParams['text.usetex'], and do not call plt.xticks/plt.yticks before a figure exists.
+
+13. HELPER FUNCTIONS DEFINED IN ALPHABETICAL ORDER
+    Every script's local helper functions are defined immediately after the imports (and the optional
+    matplotlib.use('Agg') line), in alphabetical order by name, in every file with two or more of them.
+
+14. COORDINATE DOWNCAST: float64 -> float32 before saving
+    Every Utilities/preprocess/ script that opens an xarray Dataset with float64 coordinates downcasts them to
+    float32 before saving. Scripts that build their Dataset from scratch are exempt: the PIOMAS SIC and SIT scripts
+    cast their target grids and regridded arrays to float32 when building them, PIOMAS SIV builds a time-only Dataset
+    from a CSV table, and the ONI/RONI script builds float32 variables on a time-only Dataset. The downcast takes one
+    of three forms, matching whichever coordinate-handling idiom the rest of that file already uses:
+      - Single-line comprehension, no dedicated banner (PRECC, PRECL, SLP, SST, T2M, U100, U10, V100, V10),
+        added as its own line immediately after the rename/drop_vars step:
+            ds = ds.assign_coords({c: ds[c].astype('float32') for c in ds.coords if ds[c].dtype == 'float64'})
+      - Named-variable comprehension under its own banner (ICEFRAC):
+            ### Convert coordinates that are float64 to float32
+            float_coords = [c for c in ds.coords if ds[c].dtype == 'float64']
+            ds = ds.assign_coords({c: ds[c].astype('float32') for c in float_coords})
+      - For-loop under its own banner (TProfile, UProfile, VProfile, Z500, NA_U925-U700_Daily, NH_Z500_Daily):
+            ### Convert coordinates that are float64 to float32
+            for coord in ds.coords:
+                if ds[coord].dtype == 'float64':
+                    ds[coord] = ds[coord].astype('float32')
+
+15. LEGEND: frameon=False, always
+    Every ax.legend(...)/plt.legend(...) call in the entire Plots/ tree passes frameon=False, including wrapped calls.
+
+16. DJF CONVENTION
+    Winters are labelled by the January year (December is assigned to the following year). A record
+    that starts in January has an incomplete first winter, so the first DJF is year_min + 1. Scripts
+    either slice from year_min + 1 or drop winters that lack any of December, January and February.
+
+17. SIGNIFICANCE MASKS: area-weighted Benjamini-Hochberg FDR
+    Trend maps and profiles test each grid point with the slope_pvalue helper (Tier 2 Rule 8), whose t-test uses an
+    effective sample size from the lag-1 autocorrelation of the residuals, and control the false discovery rate at
+    alpha_FDR = 2 * alpha_global = 0.10 (sig_threshold = 2 * .05). Following Wilks (2016), this controls field
+    significance at the 95% confidence level (alpha_global = 0.05) for spatially correlated fields. Maps weight by
+    cos(latitude). Profiles weight by cos(latitude) times pressure thickness, and restrict the tested family to the
+    plotted domain by setting p-values outside it to NaN before the block:
+        weights = np.cos(np.deg2rad(T_pvalues['latitude'].values))[None, :] * np.abs(np.gradient(T_pvalues['level'].values))[:, None]
+        p = T_pvalues['t'].where((T_pvalues['level'] >= 100) & (T_pvalues['latitude'] >= 0)).values.flatten()
+    Every script then normalizes the weights with weights /= np.nanmean(weights), which does not change the result.
+    Figures state the result as "Shading (or Stippling) indicates trends are significant at the 95\% confidence
+    level following area-weighted FDR correction", with "area- and pressure-weighted FDR correction" for profiles.
+    The NAWH map names the sign it tests ("cooling trends are significant"). A p-value equal to the cutoff is
+    significant. The reference block:
+        p, w = p_values.values.flatten(), np.broadcast_to(weights[:, None], p_values.shape).flatten()
+        p, w = p[np.isfinite(p)], w[np.isfinite(p)]
+        p_sorted, w_sorted = p[np.argsort(p)], w[np.argsort(p)]
+        passed = p_sorted <= (np.cumsum(w_sorted) / np.sum(w_sorted) * sig_threshold)
+        cutoff = p_sorted[np.max(np.where(passed))] if np.any(passed) else .0
+    Significant points satisfy pvalues_fdr <= cutoff. Insignificant points satisfy pvalues_fdr > cutoff.
+    Some profiles and the NAWH map split the first line into separate p = ... and w = ... lines, and the two
+    Series scripts expand the block further (order = np.argsort(p), threshold = ..., passed = p_sorted <= threshold).
+    The twelve profile slope scripts and the NAWH map do not name the cutoff and write it into the mask
+    directly: insig_mask = pvalues_fdr > (p_sorted[np.max(np.where(passed))] if np.any(passed) else .0).
+    These forms are equivalent and allowed.
+    Statistics (means, area fractions) are computed before any display-only patching of the fields.
+    Exception: WACE tests significance with an uncorrected p < 0.05.
+
+18. TICKS BEFORE AXIS LABELS
+    For each axes, the tick calls (tick_params, plt.xticks/plt.yticks, set_xticks/set_yticks,
+    set_xticklabels/set_yticklabels) come before that axes' xlabel/ylabel (plt.xlabel/plt.ylabel,
+    set_xlabel/set_ylabel). A "### Ticks" or "### Ticks and domain" block therefore sits above the
+    "### Labels" block, and a merged banner lists ticks before labels ("### Title, ticks, label, and
+    domain"). Colorbar ticks and labels are exempt. Moving these calls does not change the figure,
+    with one condition: when a tick_params(labelsize=...) call follows a set_*ticklabels(fontsize=...)
+    call, the two keep their order, because the later call sets the tick label size.
+
+19. LINE LENGTH: at most 200 characters
+    No line in any script is longer than 200 characters, counting indentation and inline comments.
+    Longer statements are wrapped after a comma, with the continuation aligned under the first
+    argument, and the line count is rebalanced with the line-count procedure.
+
+20. LINE ENDINGS AND WHITESPACE
+    Every script uses LF line endings, has no trailing whitespace on any line, and has no
+    whitespace-only lines. A blank line is empty, and no script has two blank lines in a row.
+
+21. "### Save figure" BANNER
+    Every plt.savefig() call sits in a block whose banner starts with "### Save figure" (a suffix such
+    as "### Save figure with annotations" names a variant).
+    Exception: the NAO animation saves its GIF under "### Save animation as GIF".
+
+22. LOOPING FIGURES ARE CLOSED
+    Every loop that produces figures closes each figure with plt.close() (or plt.close(fig)) after saving it, so
+    memory does not grow with the number of figures. Single-figure scripts may leave the figure open.
+
+23. DIRECTORIES BLOCK: one path per line
+    The directory paths sit under their own banner, with one path assignment per line (base_dir,
+    data_dir, fig_dir, and so on). Paths are never combined into a tuple assignment or joined with a
+    semicolon. The banner reads "### Directory" when one assignment follows it and "### Directories"
+    when more than one does. The rule applies to every script, Utilities/ included.
+    The lines take one form per category. <root> is os.path.abspath(os.path.join(os.path.dirname(__file__), <up>)),
+    where <up> repeats '..' once per folder between the script and the project root ('..', '..' for Analysis/
+    and Utilities/, '..', '..', '..' for Utilities/download/, Utilities/preprocess/ and Plots/<Type>/, and one
+    more '..' for each deeper Plots/ subfolder):
+      - Plots/: base_dir = <root>, data_dir = os.path.join(base_dir, 'Data/') and
+        fig_dir = os.path.join(base_dir, 'Figures/<path>/'), in that order, with the trailing slashes.
+      - Analysis/: base_dir = <root> and data_dir = os.path.join(base_dir, 'Data').
+      - Utilities/preprocess/: data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..',
+        '..', 'Data')) under "### Directory", or base_dir = <root> followed by
+        data_dir = os.path.join(base_dir, 'Data'). The PIOMAS SIC and SIT scripts add grid_file (and SIT also
+        output_file) to the same block.
+      - Utilities/download/: paths resolve from __file__ (Rule 10), either as
+        data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'Data', 'raw'))
+        or as base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')) followed
+        by data_dir = os.path.join(base_dir, 'Data', 'raw'). The downloads that write analysis-ready files
+        (ERSSTv6, HadISST, NOAA NAO) end in 'Data' instead of 'raw'.
+      - Utilities/setup_ClimVarChange_Folders.py: base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')).
+
+24. COMMENT FORMS: banners and inline comments only
+    A script has two kinds of comments: the "### " banners and hash boxes of Rule 4, and inline
+    comments that follow code on the same line. There are no standalone "# " comment lines. An inline
+    comment is separated from the code by two spaces, then "# " and the text, which starts in lower
+    case unless its first word is a proper noun, acronym or symbol (Coriolis, NaN, NH, T and U):
+        R_eq, R_polar = 6378137.0, 6356752.3  # equatorial and polar radii [m]
+
+25. FLOAT LITERALS: no leading zero
+    A float literal below 1 drops the leading zero (.5, .05, -.07, 1e-6), in code and in the
+    arguments of every call. Strings are exempt (boxstyle='round,pad=0.2').
+
+26. NO UNUSED IMPORTS, NO BARE EXCEPT
+    Every imported name is used in its script, and every except clause names the exception it catches.
+
+27. FIGURE FILE NAMES
+    Every figure is written with plt.savefig(os.path.join(fig_dir, name), ...), directly or through a fig_path
+    variable built the same way, into fig_dir or a subfolder of it. The file is a .png whose name starts with
+    "Reanalysis_" and writes year ranges with an en dash (Rule 7). Exceptions: figures of a non-ERA5 dataset start
+    with that dataset's name (PIOMAS_ for the SIT maps, <dataset>_ for the ERA5/ERSSTv6/HadISST NAWH maps), and the
+    NAO animation writes a .gif (Rules 8 and 21).
+
+28. XARRAY REDUCTIONS NAME THE DIMENSION
+    Reductions over named dimensions pass them by keyword: .mean(dim='time'),
+    .groupby('time.year').mean(dim='time'), .std(dim='year'), .sum(dim=('latitude', 'longitude')),
+    never .mean('time'). Reductions without a dimension (.mean(), .max().values) are unaffected.
+
+29. "### Create figure" BANNER
+    The call that creates each figure (plt.subplots, plt.figure) sits under a banner that starts with
+    "### Create figure" (or "### Create axes" when the axes are added to an existing figure).
+
+30. PHYSICAL CONSTANTS: one value each
+    A physical constant has the same value in every script that uses it:
+      - WGS84 equatorial and polar radii: R_eq, R_polar = 6378137.0, 6356752.3 [m]
+      - gravity g = 9.80665 [m s^-2], dry-air gas constant Rd = 287.05 [J kg^-1 K^-1]
+      - Earth's rotation rate omega = 7.2921e-5 [s^-1]
+      - Kelvin offset 273.15 and the Poisson exponent .286 (Rd/cp) for potential temperature
+
+31. STANDARD SEASON LOOP
+    Scripts that loop over the annual, winter and summer seasons define the same dictionary and loop
+    over it with the same names:
+        months_options = {'1. ANNUAL': list(range(1, 13)), '2. DJF': [12, 1, 2], '3. JJA': [6, 7, 8]}
+        for sel_month, mons in months_options.items():
+    The season label is taken from the key (sel_month.split()[1]). Other season sets (DJF/DJFM for the
+    regimes, the four meteorological seasons) keep their own names.
+
+32. YEAR RANGES IN CONSOLE MESSAGES AND FIGURE TEXT
+    Year ranges printed to the console use the Unicode en dash, as in script and figure names
+    (Rule 7): print(f'Loaded: {start_year}–{end_year}'). Data file names inside a printed path keep
+    their ASCII hyphen. Figure text (titles, axis labels, annotations, legend entries and tick labels)
+    uses the en dash as well: ax1.text(..., f'DJF {year_min + 1}–{year_max}', ...).
+
+33. LOOP HEADER: STRING CORRECTIONS
+    Inside a season loop, the season label sits under a "### String corrections" banner and is named
+    text_months (with text_longitudes in sector loops): text_months = sel_month.split()[1].
+
+34. "### Load" BANNER
+    The first top-level data load (xr.open_dataset, xr.open_mfdataset, pd.read_*, np.loadtxt) sits under a banner
+    that starts with "### Load" ("### Load data", "### Load NAO data", "### Load data (PRECC + PRECL → PRECT)").
+    Exception: Analysis/calc_BLO_Sectors_5d_1940–2025_Reanalysis.py opens its first file under the step
+    box of Rule 4 ("##### Step 1: Compute 1-day BLO #####").
+
+35. SEMICOLONS: paired formatting calls only
+    A semicolon may join two to four short figure-formatting statements on one line when they act on the same
+    object: an axes and its x and y axis, a colorbar with its axes and outline, or a cartopy gridlines object.
+    Typical lines join x/y twins (plt.xlabel(...); plt.ylabel(...), plt.xlim(...); plt.ylim(...)), ticks with their
+    tick labels or positions (ax.set_xticks(...); ax.set_xticklabels(...)), or map features (ax.coastlines();
+    ax.add_feature(...)). The statement that creates a gridlines object may lead its line
+    (gridlines = ax.gridlines(...); gridlines.xlabel_style = gridlines.ylabel_style = {'size': 7}). A semicolon never
+    ends a line, never joins data loading, computation or printing, and never appears in the Directories block (Rule 23).
+
+36. UNITS IN FIGURE TEXT
+    Units in axis and colorbar labels are written in square brackets ([°C], [°N], [m s\textsuperscript{-1}]), never
+    in parentheses. The degree sign is always the Unicode character °, in figure text, console messages, comments and
+    docstrings, never $^{\circ}$, \degree or \textdegree. NetCDF units attributes are machine-readable metadata, not
+    text, and keep their CF/UDUNITS spellings ('degC', 'degrees_north').
+
+================================================================================
+SCRIPT ANATOMY, BY CATEGORY
+================================================================================
+Each category's stereotypical section skeleton, derived by extracting and positioning every "### " banner comment
+across all files. "### Import modules" is always the first banner and "### End time" is always the last.
+
+  Utilities/download/ : Import modules -> Start time -> Directory or Directories (Rule 23) -> [request/dataset
+  setup, script-specific] -> opening banner (Rule 5) -> [download and save] -> End time.
+
+  Utilities/preprocess/ : three structures.
+    - Single full-period file (ERA5 monthly surface fields, Z500, ICEFRAC): Import modules -> Start
+      time -> Directories [-> Years] -> Preprocess a single file -> [rename, drop, convert steps]
+      -> Save -> End time.
+    - Decade loop (T, U and V profiles, NH Z500 daily, NA U925-U700 daily): Import modules -> Start
+      time -> Directories -> Years [-> Pressure levels] -> Loop through decade/partial-decade files
+      -> Files -> [rename, drop, convert steps] -> Save -> End time.
+    - Built from scratch (PIOMAS SIC, SIT and SIV, NOAA ONI/RONI): Import modules -> Start time ->
+      Directories -> Variable/Years/Files -> [load the source table or grid, regrid or reshape,
+      convert missing values] -> Create xarray Dataset -> Save -> End time.
+
+  Analysis/ : Import modules -> Start time -> Directories -> [diagnostic-specific computation] -> End time.
+
+  Plots/ : Import modules -> Start time -> Directories -> [data loading/processing, script-specific]
+  -> Figure design -> Create figure -> [Plot / Colorbar / Title / Adjust axes, order varies] ->
+  Save figure -> End time.
+
+================================================================================
+LINE-COUNT PROCEDURE
+================================================================================
+Rule 1 dictates that every script's length is a multiple of 25. The procedure below reaches an exact target line
+count using only real, verified content changes, never blank-line padding.
+
+STEP 0 - COMPUTE THE TARGET AND THE DELTA
+  1. Count the file's current lines (len(txt.splitlines())) before editing.
+  2. Set the target: the next lower multiple of 25 (shrinking), or the file's own current count.
+  3. Make the edit, then recount. The gap between that count and the target is the delta to close.
+
+STEP 1 - CLOSE THE DELTA WITH RANKED TECHNIQUES
+  The techniques below are ranked by how strongly established each one is as a codebase-wide
+  convention. Compress with the strongest, most universal technique first. When expanding, protect
+  that same technique and reach for it last.
+
+  Compressing (too many lines), in this order:
+    1. Merge separate literal/expression assignments into one tuple-assignment line, e.g.
+       year_min = 1940 / year_max = 2025 becomes year_min, year_max = 1940, 2025.
+       Directory paths are never merged this way (Rule 23).
+    2. Collapse a multi-line list/dict literal or chained method call into a tighter packed form,
+       e.g. the pressure-level list in Utilities/download/download_CDS_API_ERA5_Global_TProfile_Monthly.py.
+    3. Inline a single-use intermediate variable directly into the expression that uses it, e.g.
+       drop_vars = [...] / ds = ds.drop_vars(drop_vars) becomes ds = ds.drop_vars([...]).
+    4. Join two to four short formatting calls on the same object with semicolons (Rule 35), e.g.
+       plt.xlim([1940, 2025]) / plt.ylim([-80, 60]) becomes plt.xlim([1940, 2025]); plt.ylim([-80, 60]).
+    5. Merge two short, adjacent, related banners with "and", e.g. "### Years" + "### Epoch"
+       -> "### Years and epoch". The directories banner is never merged (Rule 23).
+    6. Last resort: aggressively hand-restructure (unrolling an explicit list/range, packing a function
+       call's kwargs onto one line). Reserve for a large remaining gap.
+
+  Expanding, apply the same six techniques in REVERSE order, undoing the weakest, most local convention
+  first and protecting the strongest, most universal one until last:
+    1. First, un-collapse an aggressively restructured data structure back toward its explicit form.
+    2. Then, split a merged "X and Y" banner back into two.
+    3. Then, split a semicolon-joined line back into separate statements.
+    4. Then, pull a single-use inlined expression back out into its own named variable.
+    5. Then, re-wrap a long packed list/dict/call across multiple lines.
+    6. Only as a last resort, split a tuple-compressed assignment back into separate lines. Tuple compression is the
+       strongest, most universal convention, so breaking it to gain a line should almost never be necessary.
+
+STEP 2 - VERIFY
+  1. Recount: the file must equal the target exactly, not approximately.
+  2. Check that no other Tier 1 rule was broken to reach the target, in particular that rule 1
+     wasn't sacrificed when a weaker technique could have supplied the same line.
+  3. Confirm behavior is unchanged.
+
+================================================================================
+TIER 2
+================================================================================
+
+1. IMPORT BLOCK ORDER
+   Under an "### Import modules" banner, "from X import Y" lines are grouped before plain "import X" lines, and the
+   plain imports are then sorted alphabetically by module name as one flat block. Aliases (np, xr, pd, plt, mpl,
+   ccrs, cfeature) are consistent whenever used, and matplotlib itself is always imported as "import matplotlib as
+   mpl". The Student t distribution is imported as "from scipy.stats import linregress, t as student_t" so that it
+   cannot shadow a variable named t. Comma-combined imports are allowed only for submodules of one package
+   (import cartopy.crs as ccrs, cartopy.feature as cfeature). Standard-library modules each get their own line.
+   Exception: Analysis/calc_NARegimes_1940–2025_Reanalysis.py imports os and sets OMP_NUM_THREADS
+   first, because the variable must be set before numpy and sklearn are imported.
+
+2. QUOTE STYLE: single quotes by default
+   Single quotes dominate overwhelmingly. Double quotes appear only when the string itself contains a single quote
+   (for example the ValueError("No 'lat' ...") messages), for a string nested inside a single-quoted f-string
+   (f'{"Exists" if existed else "Created"}: ...'), or as the triple-quoted docstring delimiter. The reverse nesting
+   is also allowed: a double-quoted f-string whose replacement fields hold single-quoted strings
+   (rf"\textbf{{{cluster_info[r]['short']}}}"). Either way, a nested string uses the other quote type (Rule 9).
+
+3. CONFIG / PARAMETER VALUES UNDER THEIR OWN BANNER, NOT ONE BLOCK
+   Each user-editable parameter gets its own small "### " banner (e.g. "### Climatology" -> (clim_start, clim_end) =
+   (1981, 2010), "### Variable" -> var = 'T2M'). The parameter blocks follow the Directories block and come before
+   the opening banner (Rule 5) and the first data load, however long the helper functions above them are. A
+   loop-control dictionary (months_options, seasons, sector_options) sits directly above the loop it drives, which
+   may come after the data are loaded.
+
+4. COLORMAP / PROJECTION / FIGSIZE CHOICES: consistent by role
+   These are chosen according to the plotted content:
+     - RdBu_r (diverging) for temperature/anomaly/trend fields.
+     - viridis for magnitude or spread quantities (std. dev., 2D histogram density).
+     - cmocean colormaps (ice, balance_r, dense, rain) for sea ice and storm-track fields.
+     - ccrs.PlateCarree() as the data transform, essentially everywhere.
+     - ccrs.Robinson() as the default display projection for global/regional maps,
+       ccrs.NorthPolarStereo() specifically for Arctic-cropped maps.
+   Each plot family has its own figsize reused consistently across that family's variants.
+
+5. CACHING INTERMEDIATE PRODUCTS
+   Scripts that do non-trivial xarray processing generally check "if os.path.exists(output_path):"
+   before recomputing an intermediate NetCDF product. When the cache is found they print "Using Previously
+   Computed ..." (the most common form) or "File exists: ...", and when it is computed they print
+   "File being made: ..." or "Files being made: ...".
+
+6. "CHECK MARK" PROGRESS PRINTS INSIDE LOOPS
+   print(f'Check Mark [HH:MM:SS.SS]: {format_time(time.time() - start_time)}\n'), written exactly so, appears in
+   every plot script that loops over months, epochs, years or panels to produce several figures per run, as the last
+   statement of the loop that saves the figure, so it prints once per figure. It sits under a "### Progress" banner
+   and ends in \n (Tier 1 Rule 5). Where the saving loop is nested inside a loop over epochs, styles or panel sets,
+   a few scripts print it at the end of that enclosing loop instead (the four Timeseries/DDs Sectors scripts,
+   plot_Daily_Diagnostics, plot_CCIs, plot_Z500_MapNARegimes, plot_U850_MapHistNA_NAO and the CCIs table). It is
+   omitted from single-pass scripts.
+
+7. LAYOUT ADJUSTMENT: tight_layout()/subplots_adjust() by default, with named alternatives elsewhere
+   tight_layout() or subplots_adjust() appears in most figure-producing scripts.
+
+8. REFERENCE HELPERS
+   Shared helpers are copied verbatim into each script that needs them, so that divergence shows up as
+   a text diff. The NaN-aware cosine-weighted mean divides by the weights of valid points only:
+       def cosine_weighted_spatial_mean(data, coord=None):
+           coord = coord or ('lat' if 'lat' in data.coords else 'latitude' if 'latitude' in data.coords else None)
+           if not coord:
+               raise ValueError("No 'lat' or 'latitude' coordinate found in the data array.")
+           if 'lat' in data.coords and 'latitude' in data.coords:
+               raise ValueError("Both 'lat' and 'latitude' coordinates exist.")
+           weights = np.cos(np.deg2rad(data[coord]))
+           return (data * weights).sum(dim=coord) / (data.notnull() * weights).sum(dim=coord)
+   The helper reduces latitude only. A two-dimensional area mean over valid points (used for SST,
+   where each latitude band must count in proportion to its ocean area) divides two helper calls:
+       cosine_weighted_spatial_mean(x.sum(dim='longitude')) / cosine_weighted_spatial_mean(x.notnull().sum(dim='longitude'))
+   Trends per decade, with p-values adjusted for lag-1 autocorrelation (Santer et al. 2000), come from:
+       def slope_pvalue(x, y):
+           fit = linregress(x, y)
+           resid = y - fit.intercept - fit.slope * x
+           r1 = max(np.nan_to_num(np.corrcoef(resid[:-1], resid[1:])[0, 1]), 0) if np.std(resid) > 0 else 0  # lag-1 autocorrelation of residuals
+           n_eff = max(len(y) * (1 - r1) / (1 + r1), 3)  # effective sample size (Santer et al. 2000)
+           return fit.slope * 10, (2 * student_t.sf(abs(fit.slope) / fit.stderr * np.sqrt((n_eff - 2) / (len(y) - 2)), n_eff - 2) if fit.stderr > 0 else fit.pvalue)
+   The FDR block is given under Tier 1 Rule 17. The spine helper is one of two forms. The common one is
+       def adjust_spines(ax, spines):
+           for loc, spine in ax.spines.items():
+               if loc in spines:
+                   spine.set_position(('outward', 5))
+               else:
+                   spine.set_color('none')
+           ax.yaxis.set_ticks([])
+           ax.xaxis.set_ticks_position('bottom')
+   and the other omits its ax.yaxis.set_ticks([]) line. Exceptions: the ZonalMean scripts use ('outward', 0), the
+   NARegimes Duration/Transitions map adds outward, color and lw arguments, and plot_JVI_NAO_AT uses adjust_spines_double_y.
+
+9. DERIVED-DATA NAMES
+   Analysis outputs follow <Source>[_<Domain>]_<Diagnostic>[_<Variant>]_<Start>-<End>_<Cadence>.nc
+   (e.g. ERA5_BLO_1d_1940-1949_Daily.nc, ERA5_NA_JLI_JSI_1940-2025_Daily.nc). The regime outputs are
+   the exception and end in <Season>_<FirstWinter>-<LastWinter>.nc. Plot caches follow
+   <Source>_<Domain>_<Start>-<End>_<Variable>[_Slopes|_PValues]_<Season>_<Sector>[_AnnualZonalMeans].nc
+   (e.g. ERA5_Global_1940-2025_TProfile_DJF_NH_AnnualZonalMeans.nc). Three further cache patterns exist:
+     - Annual means: ERA5_Global_1940-2025_<Variable>_Annual.nc and
+       <Dataset>_NAWH_SST[_Index]_<Season>_1940-2025_Annual.nc.
+     - Epoch amplification profiles: ERA5_Global_<Start>-<End>_to_<Start>-<End>_TProfileAmp_<Season>_<Sector>.nc.
+     - WACE trends: ERA5_Global_1998-2012_<Variable>_<Slopes|PValues>_DJF.nc.
+   Plot scripts never write to Data/raw/.
