@@ -16,7 +16,8 @@ The codebase follows a four-stage pipeline, reflected directly in the `Scripts/`
 3. **Analysis** (`Scripts/Analysis/`) computes derived diagnostics from the preprocessed data, such
    as Arctic amplification indices, blocking frequency, jet latitude/speed indices, and North
    Atlantic circulation regimes, saving the results back to `Data/` as NetCDF.
-4. **Plots** (`Scripts/Plots/`) reads from `Data/` and produces the figures in `Figures/`.
+4. **Plots** (`Scripts/Plots/`) reads from `Data/` and produces the figures in `Figures/`. The complete
+   figure set is available as archives on the [latest release](https://github.com/JulianArnheim/ClimVarChange/releases/latest).
 
 Each script is self-contained and meant to be run directly, top to bottom.
 
@@ -287,17 +288,11 @@ plus TeX), and `bin/run_container.sh <script>` runs a script with the project mo
 `/usr/local/src/ClimVarChange`. Run it from the project root, since it mounts the current folder,
 e.g. `bin/run_container.sh Scripts/Utilities/setup_ClimVarChange_Folders.py`.
 
-## Figures
-
-The complete figure set is available as downloadable archives on the
-[latest release](https://github.com/JulianArnheim/ClimVarChange/releases/latest).
-
 ## Acknowledgments
 
 The data visualization approach used throughout this repository, particularly the plotting style
 and figure conventions, is inspired by the code and figures of Zachary Labe (https://zacklabe.com/).
 Many thanks to him for making his work publicly accessible.
-
 
 ## Author
 
