@@ -290,7 +290,7 @@ e.g. `bin/run_container.sh Scripts/Utilities/setup_ClimVarChange_Folders.py`.
 ## Acknowledgments
 
 The data visualization approach used throughout this repository, particularly the plotting style
-and figure conventions, is heavily inspired by the code and figures of Zachary Labe (https://zacklabe.com/).
+and figure conventions, is inspired by the code and figures of Zachary Labe (https://zacklabe.com/).
 Many thanks to him for making his work publicly accessible.
 
 
