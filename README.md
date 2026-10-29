@@ -21,6 +21,33 @@ The codebase follows a four-stage pipeline, reflected directly in the `Scripts/`
 
 Each script is self-contained and meant to be run directly, top to bottom.
 
+## Quick start
+
+1. Install the Python packages and a TeX distribution (see [Environment](#environment)), or build
+   the Docker image with `bin/build_image.sh`.
+2. Create the folder layout once, from the project root:
+   ```
+   python Scripts/Utilities/setup_ClimVarChange_Folders.py
+   ```
+3. Set up Climate Data Store access for the ERA5 downloads. Register at
+   https://cds.climate.copernicus.eu, accept the licence of each ERA5 dataset you request, and save
+   your personal access token in `~/.cdsapirc` (`%USERPROFILE%\.cdsapirc` on Windows):
+   ```
+   url: https://cds.climate.copernicus.eu/api
+   key: <your-personal-access-token>
+   ```
+4. Run a variable's download and preprocess scripts, then any Analysis script its figures need,
+   and finally the plot scripts. For example, the 200 hPa vertical pressure velocity maps need:
+   ```
+   python Scripts/Utilities/download/download_CDS_API_ERA5_Global_OMEGA200_Monthly.py
+   python Scripts/Utilities/preprocess/preprocess_ERA5_Global_OMEGA200_Monthly.py
+   python Scripts/Plots/Spatial/OMEGA200/Global/plot_OMEGA200_MapHistGlobal_Reanalysis.py
+   ```
+
+The full ERA5 set is large. Each 10-year monthly temperature-profile file is about 18 GB, each U and
+V profile file about 8 GB, and most global monthly fields between 2 and 9 GB, so download only the
+variables that the figures you need depend on.
+
 ## Directory structure
 
 ```
@@ -198,9 +225,10 @@ Figures from non-reanalysis products replace the `Reanalysis_` prefix with the d
 Currently used by the download/preprocess scripts:
 
 - **ERA5** (Climate Data Store API): 2-m temperature, sea surface temperature, sea level pressure,
-  geopotential height, precipitation, sea ice concentration, 10/100-m and profile winds, temperature
-  profile. Most variables are global monthly fields; North Atlantic 925-700 hPa winds and Northern
-  Hemisphere 500 hPa height are also retrieved as regional daily fields.
+  geopotential height, 200 hPa vertical pressure velocity, precipitation, sea ice concentration,
+  10/100-m and profile winds, temperature profile. Most variables are global monthly fields; North
+  Atlantic 925-700 hPa winds and Northern Hemisphere 500 hPa height are also retrieved as regional
+  daily fields.
 - **ERSSTv6** and **HadISST**: sea surface temperature.
 - **NOAA PSL**: daily NAO index, computed from NCEP/NCAR Reanalysis 1 500 hPa heights (used by the
   Histograms/JLI NAO scripts and the Spatial U850 NAO map), and the monthly Oceanic Niño Index
@@ -216,6 +244,30 @@ ERA5 sea-ice concentration before 1979 is prescribed from reconstructions rather
 satellite. The ICEFRAC trend maps loop over start years from 1940 to 1980, and the ICEFRAC
 epoch-difference maps compare 1941–1970 with 1991–2020, so any trend or difference that includes
 years before 1979 partly reflects those reconstructions.
+
+### ERA5 fields
+
+| Key | CDS variable | Level | Domain and cadence | Variable and units in `Data/` |
+|---|---|---|---|---|
+| T2M | `2m_temperature` | Surface | Global, monthly | `t2m`, °C |
+| SST | `sea_surface_temperature` | Surface | Global, monthly | `sst`, °C |
+| SLP | `mean_sea_level_pressure` | Surface | Global, monthly | `SLP`, hPa |
+| PRECC, PRECL | `convective_precipitation`, `large_scale_precipitation` | Surface | Global, monthly | `PRECC`, `PRECL`, mm month⁻¹ |
+| ICEFRAC | `sea_ice_cover` | Surface | Global, monthly | `siconc`, fraction (plotted in %) |
+| U10, V10, U100, V100 | 10-m and 100-m wind components | Surface | Global, monthly | `u10`, `v10`, `u100`, `v100`, m s⁻¹ |
+| Z500 | `geopotential` | 500 hPa | Global, monthly | `z`, gpm |
+| OMEGA200 | `vertical_velocity` | 200 hPa | Global, monthly | `OMEGA200`, Pa s⁻¹ |
+| TProfile, UProfile, VProfile | `temperature`, `u_component_of_wind`, `v_component_of_wind` | 37 levels, 1–1000 hPa | Global, monthly, 10-year files | `t` (°C), `u`, `v` (m s⁻¹) |
+| Z500 (daily) | `geopotential` | 500 hPa | 0–90°N, daily 12 UTC, 10-year files | `z`, gpm |
+| U925-U700 | `u_component_of_wind` | 9 levels, 925–700 hPa | 15–75°N, 60°W–0°, daily 12 UTC, 10-year files | `u`, m s⁻¹ |
+
+Every monthly download covers 1940–2025. Precipitation is converted from ERA5's mean daily accumulation
+(m) to a monthly total (mm), and the plots add the two components to form PRECT. Geopotential is divided
+by g = 9.80665 m s⁻². OMEGA200 keeps ERA5's sign convention, so negative values are rising motion.
+
+ERA5 assimilates far fewer observations before the satellite era (1979). Upper-air fields and the
+divergent circulation, including OMEGA200, then rely more on the forecast model, so trends and epoch
+differences that start in the 1940s should be read with that in mind.
 
 ## Conventions
 
@@ -268,6 +320,45 @@ lying poleward of 50°N is shorter than the reference, so sector SIN can fall sl
 autumn), 0.03% in AS, 0.01% in AM and 0.01% in PA. The NH index stays above 1. The North Atlantic
 regimes are clustered from linearly detrended daily Z500 anomalies.
 
+## Analysis diagnostics
+
+| Script | Diagnostic | Input | Output in `Data/` |
+|---|---|---|---|
+| `calc_AA_T2M` | Arctic amplification, Arctic (70–90°N) minus NH annual T2M anomaly relative to 1981–2010 | Monthly T2M | `ERA5_AA_1_T2M_1940-2025_Annual.nc` |
+| `calc_BLO_Sectors_5d` | Blocking: 1-day gradient reversal (GHGN < −10 m per °lat, GHGS > 0) at 35–75°N, then five-day persistence by sector | Daily NH Z500 | `ERA5_BLO_1d_*` and `ERA5_BLO_5d_Sectors_*` (10-year files) |
+| `calc_CCIs` | Upper-tropospheric warming, Arctic amplification, polar stratospheric temperature and upper and lower tropospheric temperature gradients, by season and sector | Monthly T profiles | `ERA5_CCIs_1940-2025_Annual.nc` |
+| `calc_JVI_Sectors` | Jet variability: latitude span of the central 95% of grid points within 5 m of the sector's 30–70°N mean Z500, per month | Daily NH Z500 | `ERA5_JVI_Sectors_*` (10-year files) |
+| `calc_NA_JLI_JSI` | Jet latitude and speed: latitude and value of the maximum zonal-mean zonal wind, refined with a cubic spline, at six levels from 925 to 700 hPa | Daily NA winds | `ERA5_NA_JLI_JSI_1940-2025_Daily.nc` |
+| `calc_NARegimes` | Four North Atlantic regimes (NAO+, BL, NAO−, AR) for DJF and DJFM | Daily NH Z500 | `ERA5_NA_Z500_Clustered_Regimes_*`, `ERA5_NA_Cluster_*` |
+| `calc_SIN_Sectors` | Sinuosity of the Z500 isohypse at the 30–70°N mean height | Daily NH Z500 | `ERA5_SIN_Sectors_*` (10-year files) |
+| `calc_ZON_Sectors` | Zonal index, 20–50°N minus 60–90°N mean Z500 | Daily NH Z500 | `ERA5_ZON_Sectors_*` (10-year files) |
+
+The regimes come from k-means clustering (500 initialisations) of the leading 14 principal components
+of detrended, sqrt(cos φ)-weighted daily Z500 anomalies over 20–80°N, 90°W–30°E. Each cluster is named
+by its strongest dipole, and runs shorter than three days are reassigned.
+
+Several plot families read these outputs, so run the matching Analysis script first:
+- Daily-diagnostic timeseries, scatter plots, SIN histograms and the `Spatial/DDs` blocking maps read
+  the BLO, JVI, SIN and ZON files.
+- The JLI histograms read the JLI/JSI file, and their NAO versions also read the PSL daily NAO index.
+- `plot_CCIs`, the CCIs table and `plot_TProfileHist_10top_CCIs` read the CCIs file.
+- The `Spatial/NARegimes` maps and `plot_Z500_NARegimes` read the regime files.
+
+## Map figures
+
+Global, NH and Arctic maps share four figure types, each made for annual, DJF and JJA means:
+- **Historical**: the 1981–2010 mean.
+- **Historical Std**: the 1981–2010 interannual standard deviation of linearly detrended seasonal
+  means. The PIOMAS SIT standard deviation is not detrended.
+- **Diff**: the 1991–2020 mean minus the 1941–1970 mean (2006–2025 minus 1980–1999 for PIOMAS SIT).
+- **Slope**: the least-squares trend per decade to 2025 from each start year 1940, 1950, …, 1980,
+  with DJF trends starting one year later. PIOMAS SIT trends cover 1979–2025 only.
+
+Colormaps follow the field: red-blue diverging maps for temperature and pressure, `BrBG` for
+precipitation (green is wetter), `BrBG_r` for OMEGA200 (green is rising motion), `viridis` for
+standard deviations, and `cmocean` maps for sea ice and the precipitation climatology. Colorbar
+labels state any power-of-ten scaling of the tick values, for example [10⁻³ Pa s⁻¹].
+
 ## Environment
 
 `requirements.txt` lists the packages actually imported across `Scripts/`: `numpy`, `xarray`,
@@ -287,6 +378,15 @@ code runs from any folder name and on any machine without edits.
 plus TeX), and `bin/run_container.sh <script>` runs a script with the project mounted at
 `/usr/local/src/ClimVarChange`. Run it from the project root, since it mounts the current folder,
 e.g. `bin/run_container.sh Scripts/Utilities/setup_ClimVarChange_Folders.py`.
+
+## Script conventions
+
+`SCRIPTRULES.txt` records the conventions every script follows. Each script opens with a docstring
+naming its sources and author, then runs top to bottom through banner-labelled blocks: imports, helper
+functions in alphabetical order, start time, directories, parameters, loading, computation or plotting,
+saving and end time. Scripts are a multiple of 25 lines long, print fixed opening and closing banners,
+save figures at 1000 dpi and resolve every path from their own location. Shared helpers, such as the
+trend and p-value function, are copied verbatim into each script, so any divergence shows up in a diff.
 
 ## Acknowledgments
 
