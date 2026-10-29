@@ -52,7 +52,7 @@ ClimVarChange/
 │       │   ├── AT/
 │       │   └── NH/
 │       ├── Spatial/              Map figures
-│       │   ├── Baroclinicity/, DDs/, ICEFRAC/Arctic/, NARegimes/, PRECT/Global/,
+│       │   ├── Baroclinicity/, DDs/, ICEFRAC/Arctic/, NARegimes/, OMEGA200/Global/, PRECT/Global/,
 │       │   │   SIT/, SLP/, SST/{Global,NAWH}/, T2M/{Arctic,CONUS,Global,NH}/, UV/Global/
 │       │   └── plot_U850_MapHistNA_NAO, plot_Z500_MapStormtrackNA
 │       ├── Tables/
@@ -114,7 +114,7 @@ Figures/
 │   │   └── T2M/Local AA/{Latitudes,Periods,Sweeney2023}/
 │   ├── CONUS/T2M/Slope/no_stippling/
 │   ├── Global/
-│   │   ├── {PRECT,SLP,SST,T2M}/{Diff,Historical,Historical Std,Slope}/
+│   │   ├── {OMEGA200,PRECT,SLP,SST,T2M}/{Diff,Historical,Historical Std,Slope}/
 │   │   └── {UV10,UV100,UV250,UV500,UV700,UV850}/Historical/
 │   ├── NA/
 │   │   ├── {Baroclinicity,NAO,Regimes,Stormtrack}/
