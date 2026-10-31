@@ -48,14 +48,14 @@ fig_dir = os.path.join(base_dir, 'Figures/Timeseries/SST/Arctic/')
 ### Years
 year_min, year_max = 1940, 2025
 
-print(f'\n---- Arctic Warming (SST) ----\n')
-
 ### Time specifications
 month_labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan']
 month_positions = [1, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 365]
 
 ### Arctic definition
 Arctic_min_lat = 66.5
+
+print(f'\n---- Arctic Warming (SST) ----\n')
 
 ### Load data
 datat = xr.open_dataset(os.path.join(data_dir, f'ERA5_Global_{year_min}-{year_max}_SST_Monthly.nc'))

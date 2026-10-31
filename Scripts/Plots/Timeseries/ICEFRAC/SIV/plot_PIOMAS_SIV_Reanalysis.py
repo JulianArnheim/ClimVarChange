@@ -119,7 +119,7 @@ plt.legend(shadow=False, fontsize=13, loc='upper center', bbox_to_anchor=(.5, 1.
 ### Save figure
 plt.tight_layout()
 plt.savefig(os.path.join(fig_dir, f'Reanalysis_PIOMAS_SIV_Anoms_{year_crop}–{year_max}.png'), dpi=1000)
-plt.close(fig)
+plt.close()
 
 ### End time
 print(f'---- Script Duration [HH:MM:SS]: {format_time(time.time() - start_time)} ----\n')

@@ -47,11 +47,11 @@ year_min, year_max = 1940, 2025
 epochs_1 = [(1941, 1970), (1951, 1980)]  # first time period options
 epochs_2 = [(1981, 2010), (1991, 2020)]  # second time period options
 
-print(f'\n---- Changing Meridional Temperature Gradient ----\n')
-
 ### Levels and latitudes
 levs = [1000, 925, 850, 700, 600, 500, 400, 300, 250, 200, 150]
 lat_ranges = {'subtrop': slice(50, 30), 'subpolar': slice(70, 50)}
+
+print(f'\n---- Changing Meridional Temperature Gradient ----\n')
 
 ### Figure design
 plt.rc('text', usetex=True)
@@ -141,7 +141,7 @@ for epoch_1_start, epoch_1_end in epochs_1:
 
             ### Save figure
             plt.savefig(os.path.join(fig_dir, f'Reanalysis_NH_TGradDiff_{text_months}_{epoch_1_start}–{epoch_1_end}_{epoch_2_start}–{epoch_2_end}.png'), dpi=1000)
-            plt.close(fig)
+            plt.close()
 
             ### Progress
             print(f'Check Mark [HH:MM:SS.SS]: {format_time(time.time() - start_time)}\n')

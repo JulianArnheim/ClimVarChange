@@ -103,7 +103,7 @@ def plot_panel(ax, year_min, year_max, SIN_data, sector_code, sector_name, y_tic
         ax.set_title(rf'\textbf{{{sector_name}}}', fontsize=20)
     ax.set_xlabel(r'\textbf{Year}', fontsize=18, labelpad=10, color='k')
 
-    ### Annotation
+    ### Annotations
     if running_mean_labels:
         x = np.datetime64(f'{end_yr-2}-01-01')
         ax.annotate('Monthly Mean', xy=(x, ylim[1] - .1), color='k', fontsize=13, ha='right', va='bottom')
@@ -140,7 +140,7 @@ for sel_month, mons in months_options.items():
     text_months = sel_month.split()[1]
 
     ### For title only, make ANNUAL blank
-    title_season = '' if text_months == 'ANNUAL' else f'{text_months} '
+    season_prefix = '' if text_months == 'ANNUAL' else f'{text_months} '
 
     ### Figure
     print(f'{text_months}')
@@ -181,7 +181,7 @@ for sel_month, mons in months_options.items():
             ax.set_ylabel(r'\textbf{Sinuosity Index (SIN)}', fontsize=18, labelpad=10, color='k') if i % 2 == 0 else ax.set_ylabel('')
 
         ### Title
-        ax_top.set_title(rf'\textbf{{{title_season}Sinuosity Index (SIN)}}', color='k', fontsize=36, y=1.01)
+        ax_top.set_title(rf'\textbf{{{season_prefix}Sinuosity Index (SIN)}}', color='k', fontsize=36, y=1.01)
         ax_top.text(.5, .995, r'\textbf{Northern Hemisphere (180°W–180°E)}', fontsize=20, color='k', ha='center', va='top', transform=ax_top.transAxes)
 
         ### Save figure
@@ -191,7 +191,7 @@ for sel_month, mons in months_options.items():
         suffix = '_letters' if letters else ''
         fig_path = os.path.join(fig_dir, f'Reanalysis_SIN_{text_months}_{year_min}–{year_max}{suffix}.png')
         plt.savefig(fig_path, dpi=1000)
-        plt.close(fig)
+        plt.close()
 
     ### Progress
     print(f'Check Mark [HH:MM:SS.SS]: {format_time(time.time() - start_time)}\n')

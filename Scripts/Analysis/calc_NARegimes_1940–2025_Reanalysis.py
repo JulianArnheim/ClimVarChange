@@ -81,12 +81,12 @@ data_dir = os.path.join(base_dir, 'Data')
 year_min, year_max = 1940, 2025
 epochs = [(year_min, year_max), (1981, 2010)]
 
-print(f'\n---- Weather Regime Clusters ----\n')
-
 ### PCA (EOF analysis) specifications
 cluster_order = ['NAO+', 'BL', 'NAO-', 'AR']
 n_clusters = len(cluster_order)
 n_EOFs, n_inits = 14, 500
+
+print(f'\n---- Weather Regime Clusters ----\n')
 
 ### Loop through epochs
 for start_year, end_year in epochs:

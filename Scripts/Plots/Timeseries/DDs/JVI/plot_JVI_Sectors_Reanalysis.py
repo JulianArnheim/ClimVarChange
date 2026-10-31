@@ -100,7 +100,7 @@ def plot_panel(ax, year_min, year_max, JVI_data, sector_code, sector_name, y_tic
     ax.set_xlabel(r'\textbf{Year}', fontsize=16, labelpad=10, color='k')
     ax.set_ylabel(r'\textbf{JVI [° Latitude]}', fontsize=16, labelpad=10, color='k')
 
-    ### Annotation
+    ### Annotations
     if running_mean_labels:
         x = np.datetime64(f'{end_yr-2}-01-01')
         ax.annotate('Monthly Mean', xy=(x, ylim[1] - 2.1), color='k', fontsize=11, ha='right', va='bottom')
@@ -143,7 +143,7 @@ for sel_month, mons in months_options.items():
     print(f'{text_months}')
 
     ### For title only, make ANNUAL blank
-    title_season = '' if text_months == 'ANNUAL' else f'{text_months} '
+    season_prefix = '' if text_months == 'ANNUAL' else f'{text_months} '
 
     ### Season specification
     JVIs_season = JVIs.sel(time=JVIs['time.month'].isin(mons))
@@ -181,7 +181,7 @@ for sel_month, mons in months_options.items():
             ax.set_ylabel(r'\textbf{JVI [° Latitude]}', fontsize=18, labelpad=10, color='k') if i % 2 == 0 else ax.set_ylabel('')
 
         ### Title
-        ax_top.set_title(rf'\textbf{{{title_season}Jet Variability Index (JVI)}}', color='k', fontsize=36, y=1.01)
+        ax_top.set_title(rf'\textbf{{{season_prefix}Jet Variability Index (JVI)}}', color='k', fontsize=36, y=1.01)
         ax_top.text(.5, .985, r'\textbf{Northern Hemisphere (180°W–180°E)}', fontsize=20, color='k', ha='center', va='top', transform=ax_top.transAxes)
 
         ### Save figure
@@ -191,7 +191,7 @@ for sel_month, mons in months_options.items():
         suffix = '_letters' if letters else ''
         fig_path = os.path.join(fig_dir, f'Reanalysis_JVI_{text_months}_{year_min}–{year_max}{suffix}.png')
         plt.savefig(fig_path, dpi=1000)
-        plt.close(fig)
+        plt.close()
 
     ### Progress
     print(f'Check Mark [HH:MM:SS.SS]: {format_time(time.time() - start_time)}\n')

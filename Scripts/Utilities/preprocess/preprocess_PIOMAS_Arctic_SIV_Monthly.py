@@ -25,8 +25,6 @@ start_time = time.time()
 ### Directory
 data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'Data'))
 
-print(f'\n---- Preprocess PIOMAS SIV ----\n')
-
 ### Variable
 var = 'SIV'
 
@@ -36,6 +34,8 @@ year_min, year_max = 1979, 2025
 ### Files
 input_file = os.path.join(data_dir, 'raw', f'PIOMAS_Arctic_{year_min}-{year_max}_{var}_Monthly_raw.csv')
 output_file = os.path.join(data_dir, f'PIOMAS_Arctic_{year_min}-{year_max}_{var}_Monthly.nc')
+
+print(f'\n---- Preprocess PIOMAS SIV ----\n')
 
 ### Preprocess
 if os.path.exists(output_file):

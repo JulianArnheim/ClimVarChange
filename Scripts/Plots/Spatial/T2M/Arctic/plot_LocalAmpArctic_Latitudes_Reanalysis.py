@@ -26,10 +26,10 @@ base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '
 data_dir = os.path.join(base_dir, 'Data/')
 fig_dir = os.path.join(base_dir, 'Figures/Spatial/Arctic/T2M/Local AA/Latitudes/')
 
-print(f'\n---- Arctic Amplification (T2M) ----\n')
-
 ### Years
 year_min, year_max = 1940, 2025
+
+print(f'\n---- Arctic Amplification (T2M) ----\n')
 
 ### Month settings
 months_options = {'1. ANNUAL': list(range(1, 13)), '2. DJF': [12, 1, 2], '3. JJA': [6, 7, 8]}
@@ -138,8 +138,8 @@ for sel_month, mons in months_options.items():
     ax.set_ylabel(r'\textbf{Arctic Definition}', fontsize=9)
 
     ### Annotations
-    month_text = '' if text_months == 'ANNUAL' else f'{text_months}'
-    fig.text(.08, 1, month_text, fontsize=13, fontweight='bold', color='dimgray', ha='right', va='top')
+    season_prefix = '' if text_months == 'ANNUAL' else f'{text_months} '
+    fig.text(.08, 1, season_prefix.rstrip(), fontsize=13, fontweight='bold', color='dimgray', ha='right', va='top')
     fig.text(.85, 1, f'–{int(T2M.year.max())}', fontsize=13, fontweight='bold', color='dimgray', ha='right', va='top')
 
     ### Annotation for global warming rates
@@ -166,7 +166,7 @@ for sel_month, mons in months_options.items():
     ### Save figure
     fig_path = os.path.join(fig_dir, f'Reanalysis_Arctic_T2M_AA_Latitudes_{text_months}_{year_min}–{year_max}.png')
     plt.savefig(fig_path, dpi=1000, bbox_inches='tight')
-    plt.close(fig)
+    plt.close()
 
     ### Progress
     print(f'Check Mark [HH:MM:SS.SS]: {format_time(time.time() - start_time)}\n')

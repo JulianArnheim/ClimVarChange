@@ -20,11 +20,11 @@ def format_time(seconds):
 ### Start time
 start_time = time.time()
 
-### Years
-year_min, year_max = 1940, 2025
-
 ### Directory
 data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'Data'))
+
+### Years
+year_min, year_max = 1940, 2025
 
 print(f'\n---- Preprocess ERA5 ----\n')
 

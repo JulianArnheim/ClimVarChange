@@ -1,5 +1,5 @@
 """
-Plot the difference in the 200 hPa vertical pressure velocity (OMEGA200) between two epochs from ERA5 reanalysis
+Plot the difference in the 500 hPa vertical pressure velocity (OMEGA500) between two epochs from ERA5 reanalysis
 
 Notes
 -----
@@ -23,19 +23,19 @@ def format_time(seconds):
 start_time = time.time()
 
 ### Directories
-base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', '..'))
+base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', '..', '..'))
 data_dir = os.path.join(base_dir, 'Data/')
-fig_dir = os.path.join(base_dir, 'Figures/Spatial/Global/OMEGA200/Diff/')
+fig_dir = os.path.join(base_dir, 'Figures/Spatial/Global/OMEGA/OMEGA500/Diff/')
 
 ### Years and epochs
 year_min, year_max = 1940, 2025
 epoch_1, epoch_2 = (1941, 1970), (1991, 2020)
 
-print(f'\n---- Difference in 200 hPa Vertical Pressure Velocity (OMEGA200) ----\n')
+print(f'\n---- Difference in 500 hPa Vertical Pressure Velocity (OMEGA500) ----\n')
 
 ### Load data
-filename = os.path.join(data_dir, f'ERA5_Global_{year_min}-{year_max}_OMEGA200_Monthly.nc')
-datap = xr.open_dataset(filename)['OMEGA200']
+filename = os.path.join(data_dir, f'ERA5_Global_{year_min}-{year_max}_OMEGA500_Monthly.nc')
+datap = xr.open_dataset(filename)['OMEGA500']
 
 ### Month settings
 months_options = {'1. ANNUAL': list(range(1, 13)), '2. DJF': [12, 1, 2], '3. JJA': [6, 7, 8]}
@@ -50,17 +50,17 @@ for sel_month, mons in months_options.items():
     print(f'{text_months}')
 
     ### Process data
-    OMEGA200 = datap.sel(time=datap['time'].dt.month.isin(mons))
+    OMEGA500 = datap.sel(time=datap['time'].dt.month.isin(mons))
     if text_months == 'DJF':
-        month, year = OMEGA200.time.dt.month, OMEGA200.time.dt.year
+        month, year = OMEGA500.time.dt.month, OMEGA500.time.dt.year
         winter_year = xr.where(month == 12, year + 1, xr.where((month == 1) | (month == 2), year, np.nan))
-        OMEGA200 = OMEGA200.assign_coords(winter_year=('time', winter_year.data)).where(~np.isnan(winter_year), drop=True)
-        OMEGA200 = OMEGA200.groupby('winter_year').mean(dim='time').rename({'winter_year': 'year'})
+        OMEGA500 = OMEGA500.assign_coords(winter_year=('time', winter_year.data)).where(~np.isnan(winter_year), drop=True)
+        OMEGA500 = OMEGA500.groupby('winter_year').mean(dim='time').rename({'winter_year': 'year'})
     else:
-        OMEGA200 = OMEGA200.groupby('time.year').mean(dim='time')
+        OMEGA500 = OMEGA500.groupby('time.year').mean(dim='time')
 
     ### Compute difference in means
-    diff_means = OMEGA200.sel(year=slice(epoch_2[0], epoch_2[1])).mean(dim='year') - OMEGA200.sel(year=slice(epoch_1[0], epoch_1[1])).mean(dim='year')
+    diff_means = OMEGA500.sel(year=slice(epoch_2[0], epoch_2[1])).mean(dim='year') - OMEGA500.sel(year=slice(epoch_1[0], epoch_1[1])).mean(dim='year')
 
     ### Spatial mean vertical pressure velocity change
     weighted_diff = diff_means.weighted(np.cos(np.deg2rad(diff_means.latitude)))
@@ -100,7 +100,7 @@ for sel_month, mons in months_options.items():
     cbar.ax.tick_params(labelsize=10, color='dimgray', labelcolor='k', labelright=True, labelleft=False, right=True, left=False)
     cbar.ax.set_xticks(np.linspace(-1e-2, 1e-2, 5)); cbar.ax.set_xticklabels(['-10', '-5', '0', '+5', '+10'])
     cbar.ax.xaxis.set_ticks_position('bottom'); cbar.ax.xaxis.set_label_position('bottom')
-    cbar.ax.set_xlabel(r'\textbf{Difference in 200 hPa Vertical Pressure Velocity [10\textsuperscript{-3} Pa s\textsuperscript{-1}]}', fontsize=11, color='k', labelpad=10)
+    cbar.ax.set_xlabel(r'\textbf{Difference in 500 hPa Vertical Pressure Velocity [10\textsuperscript{-3} Pa s\textsuperscript{-1}]}', fontsize=11, color='k', labelpad=10)
 
     ### Title
     plt.title(r'\textbf{VERTICAL PRESSURE VELOCITY CHANGE}', color='k', fontsize=18, y=1.12)
@@ -115,7 +115,7 @@ for sel_month, mons in months_options.items():
 
     ### Save figure
     plt.subplots_adjust(top=.98, bottom=.03, left=.08, right=.92)
-    plt.savefig(os.path.join(fig_dir, f'Reanalysis_Global_OMEGA200_Diff_{text_months}_{epoch_1[0]}–{epoch_1[1]}_{epoch_2[0]}–{epoch_2[1]}.png'), dpi=1000)
+    plt.savefig(os.path.join(fig_dir, f'Reanalysis_Global_OMEGA500_Diff_{text_months}_{epoch_1[0]}–{epoch_1[1]}_{epoch_2[0]}–{epoch_2[1]}.png'), dpi=1000)
     plt.close()
 
     ### Progress

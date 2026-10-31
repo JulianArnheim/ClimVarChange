@@ -35,8 +35,7 @@ c = cdsapi.Client()
 for chunk in decade_chunks:
     years_list = [str(y) for y in chunk]
     output_file = os.path.join(data_dir, f'ERA5_Global_{years_list[0]}-{years_list[-1]}_UProfile_Monthly_raw.nc')
-    print(f'Requesting years {years_list[0]}–{years_list[-1]}, monthly '
-          f'means, globally, all pressure levels... Output: {output_file}\n')
+    print(f'Requesting years {years_list[0]}–{years_list[-1]}, monthly means, globally, all pressure levels... Output: {output_file}\n')
     c.retrieve(ds, {
         'product_type': 'monthly_averaged_reanalysis',
         'variable': 'u_component_of_wind',
@@ -44,7 +43,8 @@ for chunk in decade_chunks:
                            '125', '150', '175', '200', '225', '250', '300', '350', '400', '450', '500',
                            '550', '600', '650', '700', '750', '775', '800', '825', '850', '875', '900',
                            '925', '950', '975', '1000'],
-        'year': years_list, 'month': months, 'time': '00:00', 'format': 'netcdf'}, output_file)
+        'year': years_list, 'month': months,
+        'time': '00:00', 'format': 'netcdf'}, output_file)
 
 ### End time
-print(f'---- Script Duration [HH:MM:SS]: {format_time(time.time() - start_time)} ----\n')
+print(f'\n---- Script Duration [HH:MM:SS]: {format_time(time.time() - start_time)} ----\n')

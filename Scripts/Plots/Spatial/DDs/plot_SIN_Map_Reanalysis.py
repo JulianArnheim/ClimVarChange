@@ -92,7 +92,7 @@ def plot_map(date):
     ### Title
     plt.title(r'\textbf{Sinuosity Index (SIN)}', color='k', fontsize=18, y=1.22)
 
-    ### Annotation
+    ### Annotations
     plt.text(-.07, 1.33, str(a_day_dataz.time.values)[:10], transform=ax.transAxes, fontsize=17, verticalalignment='bottom', color='r')
     plt.text(-.07, 1.25, f'Isohypse: {mean_value_30_70N.values:,.1f} gpm', horizontalalignment='left', verticalalignment='bottom', transform=ax.transAxes, color='r', fontsize=8)
     plt.text(-.07, 1.1, f'Sinuosity Index: {sinuosity:.2f}', horizontalalignment='left', verticalalignment='bottom', transform=ax.transAxes, color='r', fontsize=8.8,

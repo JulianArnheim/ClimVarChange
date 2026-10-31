@@ -134,7 +134,7 @@ plt.tick_params(axis='both', labelcolor='k', color='dimgray')
 plt.xlabel(r'\textbf{ZON}', fontsize=12, color='k', labelpad=8)
 plt.ylabel(r'\textbf{JVI}', fontsize=12, color='k', labelpad=8)
 
-### Annotation
+### Annotations
 plt.text(.5, 1.02, r'\textbf{Atlantic Sector (50°W–40°E)}', ha='center', fontsize=11, color='k', transform=plt.gca().transAxes)
 plt.text(1, 1.01, f'{year_min}–{year_max}', color='k', fontsize=8, ha='right', transform=plt.gca().transAxes)
 

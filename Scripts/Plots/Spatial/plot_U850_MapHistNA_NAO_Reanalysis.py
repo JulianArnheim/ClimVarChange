@@ -36,10 +36,10 @@ fig_dir = os.path.join(base_dir, 'Figures/Spatial/NA/NAO/')
 year_min, year_max = 1940, 2025
 epochs = [(1948, year_max), (1981, 2010)]
 
-print(f'\n---- North Atlantic Oscillation (NAO) ----\n')
-
 ### Pressure level
 lev = 850
+
+print(f'\n---- North Atlantic Oscillation (NAO) ----\n')
 
 ### Load zonal wind data
 datau_datasets = []
@@ -141,7 +141,7 @@ for start_yr, end_yr in epochs:
         plt.subplots_adjust(bottom=.01)
         fig_path = os.path.join(fig_dir, f'Reanalysis_U{lev}_NA_{phase}_DJF_{start_yr}–{end_yr}.png')
         plt.savefig(fig_path, dpi=1000)
-        plt.close(fig)
+        plt.close()
 
     ### Progress
     print(f'Check Mark [HH:MM:SS.SS]: {format_time(time.time() - start_time)}\n')

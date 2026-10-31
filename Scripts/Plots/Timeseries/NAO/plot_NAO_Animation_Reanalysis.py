@@ -54,8 +54,6 @@ fig_dir = os.path.join(base_dir, 'Figures/Timeseries/NAO/gifs/')
 ### Years
 year_min, year_max = 1950, 2025
 
-print(f'\n---- North Atlantic Oscillation (NAO) Timeseries ----\n')
-
 ### Canonical NAO dipole centers from Wallace & Gutzler (1981) and Hurrell (1995)
 NAO_pos_lat, NAO_pos_lon = 35, -25  # Azores High: ~35°N, 25°W
 NAO_neg_lat, NAO_neg_lon = 65, -22  # Icelandic Low: ~65°N, 22°W
@@ -63,6 +61,8 @@ NAO_neg_lat, NAO_neg_lon = 65, -22  # Icelandic Low: ~65°N, 22°W
 ### Animation speed [frames per second], pause year, and pauses on that year and the last year [frames]
 fps, pause_year, pause_seconds, hold_seconds = 42, 2010, 4, 1
 pause_frames, hold_frames = int(pause_seconds * fps), int(hold_seconds * fps)
+
+print(f'\n---- North Atlantic Oscillation (NAO) Timeseries ----\n')
 
 ### Month options
 months_options = {'1. ANNUAL': list(range(1, 13)), '2. DJF': [12, 1, 2], '3. JJA': [6, 7, 8]}
@@ -73,9 +73,9 @@ NAOs = xr.open_dataset(os.path.join(data_dir, f'CPC_NAO_EA_1950-{year_max}_Month
 ### Loop through each season
 for sel_month, mons in months_options.items():
 
-    ### Season strings, with ANNUAL left blank in the title
+    ### String corrections
     text_months = sel_month.split()[1]
-    title_season = '' if text_months == 'ANNUAL' else f'{text_months} '
+    season_prefix = '' if text_months == 'ANNUAL' else f'{text_months} '
 
     ### Figure
     print(f'{text_months}')
@@ -140,7 +140,7 @@ for sel_month, mons in months_options.items():
     year_text = ax.text(1, 1.01, '', transform=ax.transAxes, ha='right', va='bottom', color='dimgray', fontsize=18)
 
     ### Title and annotation
-    plt.title(rf'\textbf{{{title_season} North Atlantic Oscillation (NAO)}}', color='k', fontsize=22, y=1)
+    plt.title(rf'\textbf{{{season_prefix} North Atlantic Oscillation (NAO)}}', color='k', fontsize=22, y=1)
     ax.text(.5, .96, rf'\textbf{{{lowess_num}-Year LOWESS Smoothing}}', transform=ax.transAxes, ha='center', va='top', color='g', fontsize=13)
 
     plt.tight_layout()
@@ -166,7 +166,7 @@ for sel_month, mons in months_options.items():
     ### Save animation as GIF
     filename = os.path.join(fig_dir, f'Reanalysis_NAO_{text_months}_{year_min}–{year_max}.gif')
     anim.save(filename, writer=animation.PillowWriter(fps=fps), dpi=1000)
-    plt.close(fig)
+    plt.close()
 
     ### Progress
     print(f'Check Mark [HH:MM:SS.SS]: {format_time(time.time() - start_time)}\n')

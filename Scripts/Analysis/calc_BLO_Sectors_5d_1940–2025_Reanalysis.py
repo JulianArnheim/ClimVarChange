@@ -39,10 +39,10 @@ data_dir = os.path.join(base_dir, 'Data')
 ### Years
 year_min, year_max = 1940, 2025
 
-print(f'\n---- Blocking Index (BLO) ----\n')
-
 ### Latitudes
 lats = np.arange(35, 76, 2.5)
+
+print(f'\n---- Blocking Index (BLO) ----\n')
 
 #####################################
 ##### Step 1: Compute 1-day BLO #####

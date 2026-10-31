@@ -22,8 +22,6 @@ start_time = time.time()
 ### Directory
 base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 
-print(f'\n---- Create Data and Figures Folders ----\n')
-
 ### Folder layout, with each list standing for a brace group in the README
 regions = ['Global', 'NH']
 
@@ -48,7 +46,7 @@ layout = [('Data', 'raw'),
           ('Figures', 'Scatter', ['AT', 'NH']),
           ('Figures', 'Spatial', 'Arctic', ['ICEFRAC', 'SIT'], maps),
           ('Figures', 'Spatial', 'Arctic', 'T2M', 'Local AA', ['Latitudes', 'Periods', 'Sweeney2023']),
-          ('Figures', 'Spatial', 'Global', ['OMEGA200', 'PRECT', 'SLP', 'SST', 'T2M'], maps),
+          ('Figures', 'Spatial', 'Global', [os.path.join('OMEGA', 'OMEGA200'), os.path.join('OMEGA', 'OMEGA500'), 'PRECT', 'SLP', 'SST', 'T2M'], maps),
           ('Figures', 'Spatial', 'Global', [f'UV{lev}' for lev in levs], 'Historical'),
           ('Figures', 'Spatial', 'NA', ['Baroclinicity', 'NAO', 'Regimes', 'Stormtrack']),
           ('Figures', 'Spatial', 'NA', 'SST', 'NAWH', ['ERA5', 'ERSSTv6', 'HadISST']),
@@ -62,6 +60,8 @@ layout = [('Data', 'raw'),
           ('Figures', 'Timeseries', ['PRECT', 'T2M'], ['Arctic', 'Global', 'NH']),
           ('Figures', 'Timeseries', 'SST', ['Arctic', 'Global', 'NAWH']),
           ('Figures', 'Zonal Mean', ['SST', 'T2M'])]
+
+print(f'\n---- Create Data and Figures Folders ----\n')
 
 ### Create every folder in the layout, leaving existing folders and their contents untouched
 for parts in layout:

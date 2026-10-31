@@ -116,7 +116,7 @@ for text_months, months in month_options.items():
     ### Save figure
     plt.tight_layout()
     plt.savefig(os.path.join(fig_dir, f'Reanalysis_NA_Z500_Regimes_{text_months}_{year_min + 1}–{year_max}.png'), dpi=1000)
-    plt.close(fig)
+    plt.close()
 
     ### Progress
     print(f'Check Mark [HH:MM:SS.SS]: {format_time(time.time() - start_time)}\n')

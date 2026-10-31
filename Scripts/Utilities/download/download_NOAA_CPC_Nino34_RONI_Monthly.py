@@ -47,4 +47,4 @@ with open(output_path, 'wb') as f:
 print(f'Saved {output_path}\n')
 
 ### End time
-print(f'---- Script Duration [HH:MM:SS]: {format_time(time.time() - start_time)} ----\n')
+print(f'\n---- Script Duration [HH:MM:SS]: {format_time(time.time() - start_time)} ----\n')

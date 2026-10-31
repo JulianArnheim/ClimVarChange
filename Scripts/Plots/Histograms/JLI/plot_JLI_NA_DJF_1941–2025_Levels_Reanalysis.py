@@ -40,11 +40,11 @@ fig_dir = os.path.join(base_dir, 'Figures/Histograms/JLI/')
 ### Years
 year_min, year_max = 1940, 2025
 
-print(f'\n---- Jet Latitude Index (JLI) and Jet Speed Index (JSI) ----\n')
-
 ### Pressure levels and colors
 levels = [700, 750, 800, 850, 900, 925]
 colors = plt.cm.viridis(np.linspace(.15, .9, len(levels)))
+
+print(f'\n---- Jet Latitude Index (JLI) and Jet Speed Index (JSI) ----\n')
 
 ### Load data
 filename = os.path.join(data_dir, f'ERA5_NA_JLI_JSI_{year_min}-{year_max}_Daily.nc')

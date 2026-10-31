@@ -36,7 +36,7 @@ base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '
 data_dir = os.path.join(base_dir, 'Data/')
 fig_dir = os.path.join(base_dir, 'Figures/Spatial/NH/T2M/Historical/')
 
-### Year
+### Years
 year_min, year_max = 1940, 2025
 
 ### Epoch
@@ -109,7 +109,7 @@ for sel_month, mons in months_options.items():
     ### Title
     plt.title(r'\textbf{SURFACE AIR TEMPERATURE}', color='k', fontsize=20, y=1.18)
 
-    ### Annotation
+    ### Annotations
     plt.text(.88, 1.16, rf'\textbf{{{"" if text_months == "ANNUAL" else f"{text_months} "}{epoch[0]}–{epoch[1]}}}', fontsize=10, ha='left', va='top', color='k', transform=ax.transAxes)
     plt.text(.12, 1.16, rf'\textbf{{{mean_val:.2f}°C}}', fontsize=9, ha='right', va='top', transform=ax.transAxes, bbox=dict(facecolor='w', edgecolor='k', boxstyle='round,pad=0.2'))
 

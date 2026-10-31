@@ -33,9 +33,9 @@ def slope_pvalue(x, y):
 start_time = time.time()
 
 ### Directories
-base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', '..'))
+base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', '..', '..'))
 data_dir = os.path.join(base_dir, 'Data/')
-fig_dir = os.path.join(base_dir, 'Figures/Spatial/Global/OMEGA200/Slope/')
+fig_dir = os.path.join(base_dir, 'Figures/Spatial/Global/OMEGA/OMEGA200/Slope/')
 
 ### Years
 year_min, year_max = 1940, 2025

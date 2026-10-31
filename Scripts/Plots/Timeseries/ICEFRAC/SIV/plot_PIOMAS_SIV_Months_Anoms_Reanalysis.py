@@ -45,12 +45,12 @@ year_crop = 1980
 year_min, year_max = 1979, 2025
 epoch = (1981, 2010)
 
-print(f'\n---- Arctic Sea Ice Volume ----\n')
-
 ### Time specifications
 months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 colors = ['#B0C4DE', '#9ACD32', '#FFC0CB', '#D2691E', '#00FFFF', '#FFA500',
           '#FF69B4', '#32CD32', '#FFD700', '#800080', '#FF0000', '#7B68EE']
+
+print(f'\n---- Arctic Sea Ice Volume ----\n')
 
 ### Load data
 siv = xr.open_dataset(os.path.join(data_dir, f'PIOMAS_Arctic_{year_min}-{year_max}_SIV_Monthly.nc'))['SIV'].sortby('time')

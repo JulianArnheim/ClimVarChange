@@ -57,7 +57,7 @@ for anomaly in [True, False]:
 
         ### String corrections
         text_months = season_name.split()[1]
-        title_season = '' if text_months == 'ANNUAL' else f'{text_months} '
+        season_prefix = '' if text_months == 'ANNUAL' else f'{text_months} '
 
         for sector_key, sector_name in sector_options.items():
 
@@ -125,7 +125,7 @@ for anomaly in [True, False]:
                         ax.axhline(y=y, linestyle='-', color='gray', alpha=.5, linewidth=.5, zorder=0)
 
                 ### Title and labels
-                fig.suptitle(rf'\textbf{{Climate Change Indices: {title_season}{sector_name}}}', fontsize=15, y=.99)
+                fig.suptitle(rf'\textbf{{Climate Change Indices: {season_prefix}{sector_name}}}', fontsize=15, y=.99)
                 fig.text(.01, .5, r'\textbf{Temperature [°C]}', va='center', rotation='vertical', fontsize=14, color='k', fontname='Avant Garde')
                 axes[-1].set_xlabel(r'\textbf{Year}', fontsize=13, fontweight='bold', color='k', fontname='Avant Garde', labelpad=8)
                 fig.text(.94, .942, 'Annual Mean', color='k', fontsize=6, ha='right', va='top', fontname='Avant Garde')
@@ -141,7 +141,7 @@ for anomaly in [True, False]:
                         ax.text(-.07, 1.12, rf'\textbf{{{ltr}}}', ha='left', va='bottom', color='k', fontsize=12, transform=ax.transAxes)
                 fig_path = os.path.join(save_dir, f'Reanalysis_CCIs_{text_months}_{sector_key}_{year_min}–{year_max}{suffix}.png')
                 plt.savefig(fig_path, dpi=1000)
-                plt.close(fig)
+                plt.close()
 
             ### Progress
             print(f'Check Mark [HH:MM:SS.SS]: {format_time(time.time() - start_time)}\n')

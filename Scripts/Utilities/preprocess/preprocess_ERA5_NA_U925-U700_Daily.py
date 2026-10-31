@@ -26,10 +26,10 @@ data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '
 ### Years
 year_min, year_max = 1940, 2025
 
-print(f'\n---- Preprocess ERA5 ----\n')
-
 ### Pressure levels
 pressure_levels = [str(p) for p in [925, 900, 875, 850, 825, 800, 775, 750, 700]]
+
+print(f'\n---- Preprocess ERA5 ----\n')
 
 ### Loop through pressure levels individually
 for lev in pressure_levels:

@@ -26,8 +26,6 @@ start_time = time.time()
 data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'Data'))
 grid_file = os.path.join(data_dir, 'raw', 'grid.dat.txt')
 
-print(f'\n---- Preprocess PIOMAS SIC ----\n')
-
 ### Variable
 var = 'SIC'
 
@@ -36,6 +34,8 @@ year_min, year_max = 1979, 2025
 
 ### File
 output_file = os.path.join(data_dir, f'PIOMAS_Arctic_{year_min}-{year_max}_{var}_Monthly.nc')
+
+print(f'\n---- Preprocess PIOMAS SIC ----\n')
 
 ### Load PIOMAS curvilinear grid
 nlat, nlon = 120, 360  # PIOMAS grid size

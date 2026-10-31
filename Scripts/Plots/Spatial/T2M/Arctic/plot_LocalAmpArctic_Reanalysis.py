@@ -30,10 +30,10 @@ base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '
 data_dir = os.path.join(base_dir, 'Data/')
 fig_dir = os.path.join(base_dir, 'Figures/Spatial/Arctic/T2M/Local AA/Periods/')
 
-print(f'\n---- Arctic Amplification (T2M) ----\n')
-
 ### Years
 year_min, year_max = 1940, 2025
+
+print(f'\n---- Arctic Amplification (T2M) ----\n')
 
 ### Month settings
 months_options = {'1. ANNUAL': list(range(1, 13)), '2. DJF': [12, 1, 2], '3. JJA': [6, 7, 8]}
@@ -147,8 +147,8 @@ for sel_month, mons in months_options.items():
     ### Labels and annotations
     ax.set_xlabel(r'\textbf{Final Year}', fontsize=9)
     ax.set_ylabel(r'\textbf{Initial Year}', fontsize=9)
-    annotation = '' if text_months == 'ANNUAL' else f'{text_months}'
-    fig.text(.06, 1.05, annotation, fontsize=10, fontweight='bold', color='dimgray', ha='right', va='top')
+    season_prefix = '' if text_months == 'ANNUAL' else f'{text_months} '
+    fig.text(.06, 1.05, season_prefix.rstrip(), fontsize=10, fontweight='bold', color='dimgray', ha='right', va='top')
     fig.text(.9, .01, rf'{{Arctic: $\geq$70°N}}', fontsize=5, fontweight='bold', color='dimgray', ha='right', va='top')
 
     ### Legend
@@ -166,7 +166,7 @@ for sel_month, mons in months_options.items():
     ### Save figure
     fig_path = os.path.join(fig_dir, f'Reanalysis_Arctic_T2M_AA_Periods_{text_months}_{year_min}–{year_max}.png')
     plt.savefig(fig_path, dpi=1000, bbox_inches='tight')
-    plt.close(fig)
+    plt.close()
 
     ### Progress
     print(f'Check Mark [HH:MM:SS.SS]: {format_time(time.time() - start_time)}\n')

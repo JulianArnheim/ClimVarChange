@@ -108,7 +108,7 @@ for sel_month, mons in months_options.items():
     ### Title
     plt.title(r'\textbf{PRECIPITATION}', color='k', fontsize=20, y=1.12)
 
-    ### Annotation
+    ### Annotations
     plt.text(.88, 1.05, rf'\textbf{{{"" if text_months == "ANNUAL" else f"{text_months} "}{epoch[0]}–{epoch[1]}}}', fontsize=9, rotation='horizontal', ha='left', va='top', transform=ax.transAxes)
     plt.text(.15, 1.07, rf'\textbf{{{mean_val:.2f} mm month\textsuperscript{{-1}}}}', fontsize=9, rotation='horizontal', ha='right', va='top', transform=ax.transAxes,
              bbox=dict(facecolor='w', edgecolor='k', boxstyle='round,pad=0.35'))

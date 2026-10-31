@@ -48,11 +48,11 @@ fig_dir = os.path.join(base_dir, 'Figures/Timeseries/PRECT/Global/')
 ### Years
 year_min, year_max = 1940, 2025
 
-print(f'\n---- Global Precipitation (PRECT) ----\n')
-
 ### Time specifications
 month_labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan']
 month_positions = [1, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 365]
+
+print(f'\n---- Global Precipitation (PRECT) ----\n')
 
 ### Load data
 file_precc_monthly = os.path.join(data_dir, f'ERA5_Global_{year_min}-{year_max}_PRECC_Monthly.nc')

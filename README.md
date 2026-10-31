@@ -41,7 +41,7 @@ Each script is self-contained and meant to be run directly, top to bottom.
    ```
    python Scripts/Utilities/download/download_CDS_API_ERA5_Global_OMEGA200_Monthly.py
    python Scripts/Utilities/preprocess/preprocess_ERA5_Global_OMEGA200_Monthly.py
-   python Scripts/Plots/Spatial/OMEGA200/Global/plot_OMEGA200_MapHistGlobal_Reanalysis.py
+   python Scripts/Plots/Spatial/OMEGA/OMEGA200/Global/plot_OMEGA200_MapHistGlobal_Reanalysis.py
    ```
 
 The full ERA5 set is large. Each 10-year monthly temperature-profile file is about 18 GB, each U and
@@ -79,14 +79,15 @@ ClimVarChange/
 │       │   ├── AT/
 │       │   └── NH/
 │       ├── Spatial/              Map figures
-│       │   ├── Baroclinicity/, DDs/, ICEFRAC/Arctic/, NARegimes/, OMEGA200/Global/, PRECT/Global/,
-│       │   │   SIT/, SLP/, SST/{Global,NAWH}/, T2M/{Arctic,CONUS,Global,NH}/, UV/Global/
+│       │   ├── Baroclinicity/, DDs/, ICEFRAC/Arctic/, NARegimes/, OMEGA/{OMEGA200,OMEGA500}/Global/,
+│       │   │   PRECT/Global/, SIT/, SLP/, SST/{Global,NAWH}/, T2M/{Arctic,CONUS,Global,NH}/, UV/Global/
 │       │   └── plot_U850_MapHistNA_NAO, plot_Z500_MapStormtrackNA
 │       ├── Tables/
 │       ├── Timeseries/           plot_CCIs, plot_Z500_NARegimes at the folder root
 │       │   ├── DDs/{BLO,JVI,SIN,ZON}/
 │       │   ├── ENSO/             ONI and RONI with El Niño/La Niña strength categories
 │       │   ├── ICEFRAC/{SIA,SIE,SIV}/
+│       │   ├── NAO/              Monthly CPC NAO timeseries and animation
 │       │   ├── PRECT/{Arctic,Global,NH}/
 │       │   ├── SST/{Arctic,Global,NAWH}/
 │       │   ├── T2M/{Arctic,Global,NH}/
@@ -115,7 +116,8 @@ Figure folders do not always mirror the script folders, because `Figures/` is or
 first and then by plot type. Timeseries, histogram and zonal-mean figures follow the script layout
 (`Scripts/Plots/Timeseries/T2M/Arctic/` writes to `Figures/Timeseries/T2M/Arctic/`). Map figures go
 to `Figures/Spatial/<Region>/<Variable>/<Diff|Historical|Historical Std|Slope>/` (for example
-`Scripts/Plots/Spatial/T2M/Global/` writes to `Figures/Spatial/Global/T2M/Slope/`). Profile figures
+`Scripts/Plots/Spatial/T2M/Global/` writes to `Figures/Spatial/Global/T2M/Slope/`). The vertical pressure velocity
+maps sit one level deeper, under `Figures/Spatial/Global/OMEGA/<OMEGA200|OMEGA500>/`. Profile figures
 go to `Figures/Profile/<Type>/<Global|NH>/<10 top|100 top>/`, and profile slope figures add a season
 subfolder. The Series profile slopes and the CONUS trend maps also save a copy without stippling to a
 `no_stippling/` subfolder, with `_no_stippling` appended to the file name. Braces list sibling folders.
@@ -141,7 +143,7 @@ Figures/
 │   │   └── T2M/Local AA/{Latitudes,Periods,Sweeney2023}/
 │   ├── CONUS/T2M/Slope/no_stippling/
 │   ├── Global/
-│   │   ├── {OMEGA200,PRECT,SLP,SST,T2M}/{Diff,Historical,Historical Std,Slope}/
+│   │   ├── {OMEGA/{OMEGA200,OMEGA500},PRECT,SLP,SST,T2M}/{Diff,Historical,Historical Std,Slope}/
 │   │   └── {UV10,UV100,UV250,UV500,UV700,UV850}/Historical/
 │   ├── NA/
 │   │   ├── {Baroclinicity,NAO,Regimes,Stormtrack}/
@@ -225,7 +227,7 @@ Figures from non-reanalysis products replace the `Reanalysis_` prefix with the d
 Currently used by the download/preprocess scripts:
 
 - **ERA5** (Climate Data Store API): 2-m temperature, sea surface temperature, sea level pressure,
-  geopotential height, 200 hPa vertical pressure velocity, precipitation, sea ice concentration,
+  geopotential height, 200 and 500 hPa vertical pressure velocity, precipitation, sea ice concentration,
   10/100-m and profile winds, temperature profile. Most variables are global monthly fields; North
   Atlantic 925-700 hPa winds and Northern Hemisphere 500 hPa height are also retrieved as regional
   daily fields.
@@ -256,17 +258,17 @@ years before 1979 partly reflects those reconstructions.
 | ICEFRAC | `sea_ice_cover` | Surface | Global, monthly | `siconc`, fraction (plotted in %) |
 | U10, V10, U100, V100 | 10-m and 100-m wind components | Surface | Global, monthly | `u10`, `v10`, `u100`, `v100`, m s⁻¹ |
 | Z500 | `geopotential` | 500 hPa | Global, monthly | `z`, gpm |
-| OMEGA200 | `vertical_velocity` | 200 hPa | Global, monthly | `OMEGA200`, Pa s⁻¹ |
+| OMEGA200, OMEGA500 | `vertical_velocity` | 200 hPa, 500 hPa | Global, monthly | `OMEGA200`, `OMEGA500`, Pa s⁻¹ |
 | TProfile, UProfile, VProfile | `temperature`, `u_component_of_wind`, `v_component_of_wind` | 37 levels, 1–1000 hPa | Global, monthly, 10-year files | `t` (°C), `u`, `v` (m s⁻¹) |
 | Z500 (daily) | `geopotential` | 500 hPa | 0–90°N, daily 12 UTC, 10-year files | `z`, gpm |
 | U925-U700 | `u_component_of_wind` | 9 levels, 925–700 hPa | 15–75°N, 60°W–0°, daily 12 UTC, 10-year files | `u`, m s⁻¹ |
 
 Every monthly download covers 1940–2025. Precipitation is converted from ERA5's mean daily accumulation
 (m) to a monthly total (mm), and the plots add the two components to form PRECT. Geopotential is divided
-by g = 9.80665 m s⁻². OMEGA200 keeps ERA5's sign convention, so negative values are rising motion.
+by g = 9.80665 m s⁻². OMEGA200 and OMEGA500 keep ERA5's sign convention, so negative values are rising motion.
 
 ERA5 assimilates far fewer observations before the satellite era (1979). Upper-air fields and the
-divergent circulation, including OMEGA200, then rely more on the forecast model, so trends and epoch
+divergent circulation, including OMEGA200 and OMEGA500, then rely more on the forecast model, so trends and epoch
 differences that start in the 1940s should be read with that in mind.
 
 ## Conventions
@@ -355,7 +357,7 @@ Global, NH and Arctic maps share four figure types, each made for annual, DJF an
   with DJF trends starting one year later. PIOMAS SIT trends cover 1979–2025 only.
 
 Colormaps follow the field: red-blue diverging maps for temperature and pressure, `BrBG` for
-precipitation (green is wetter), `BrBG_r` for OMEGA200 (green is rising motion), `viridis` for
+precipitation (green is wetter), `BrBG_r` for OMEGA200 and OMEGA500 (green is rising motion), `viridis` for
 standard deviations, and `cmocean` maps for sea ice and the precipitation climatology. Colorbar
 labels state any power-of-ten scaling of the tick values, for example [10⁻³ Pa s⁻¹].
 
@@ -390,11 +392,9 @@ trend and p-value function, are copied verbatim into each script, so any diverge
 
 ## Acknowledgments
 
-The data visualization approach used throughout this repository, particularly the plotting style
-and figure conventions, is inspired by the code and figures of Zachary Labe (https://zacklabe.com/).
-Many thanks to him for making his work publicly accessible.
+The data visualization approach used throughout this repository, particularly the plotting style and figure conventions, is
+inspired by the code and figures of Zachary Labe (https://zacklabe.com/). Many thanks to him for making his work publicly accessible.
 
 ## Author
 
-Julian B. Arnheim, Department of Earth System Science, University of California, Irvine
-(jarnheim@uci.edu)
+Julian B. Arnheim, Department of Earth System Science, University of California, Irvine (jarnheim@uci.edu)

@@ -141,7 +141,7 @@ for start_year, end_year in epochs:
         plt.subplots_adjust(bottom=.01)
         fig_path = os.path.join(fig_dir, f'Reanalysis_NA_Z500_Stormtrack_{tag}_DJF_{first_year}–{end_year}.png')
         plt.savefig(fig_path, dpi=1000)
-        plt.close(fig)
+        plt.close()
 
         ### Progress
         print(f'Check Mark [HH:MM:SS.SS]: {format_time(time.time() - start_time)}\n')

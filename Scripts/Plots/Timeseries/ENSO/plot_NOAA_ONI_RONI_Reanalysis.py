@@ -45,13 +45,13 @@ fig_dir = os.path.join(base_dir, 'Figures/Timeseries/ENSO/')
 ### Years
 year_min, year_max = 1950, 2026
 
-print(f'\n---- Oceanic Niño Index (ONI) and Relative Oceanic Niño Index (RONI) ----\n')
-
 ### Strength categories [°C]
 categories = [('Weak', .5, 1), ('Moderate', 1, 1.5), ('Strong', 1.5, 2), ('Very Strong', 2, 3)]
 
 ### Colors
 nino_color, nina_color = 'crimson', 'deepskyblue'
+
+print(f'\n---- Oceanic Niño Index (ONI) and Relative Oceanic Niño Index (RONI) ----\n')
 
 ### Seasons
 seasons = ['DJF', 'JFM', 'FMA', 'MAM', 'AMJ', 'MJJ', 'JJA', 'JAS', 'ASO', 'SON', 'OND', 'NDJ']
@@ -144,7 +144,7 @@ plt.ylabel(r'\textbf{Index [°C]}', fontsize=15, color='k', labelpad=8)
 ### Save figure
 plt.tight_layout()
 plt.savefig(os.path.join(fig_dir, f'Reanalysis_ENSO_ONI_RONI_{year_min}–{year_max}.png'), dpi=1000)
-plt.close(fig)
+plt.close()
 
 ### End time
 print(f'---- Script Duration [HH:MM:SS]: {format_time(time.time() - start_time)} ----\n')

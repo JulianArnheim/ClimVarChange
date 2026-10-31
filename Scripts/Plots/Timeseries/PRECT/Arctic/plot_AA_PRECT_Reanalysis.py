@@ -53,10 +53,10 @@ fig_dir = os.path.join(base_dir, 'Figures/Timeseries/PRECT/Arctic/')
 year_min, year_max = 1940, 2025
 epoch = (1981, 2010)
 
-print(f'\n---- Arctic Amplification (PRECT) ----\n')
-
 ### Arctic definition
 Arctic_min_lats = [60, 65, 66.5, 70]
+
+print(f'\n---- Arctic Amplification (PRECT) ----\n')
 
 ### Load monthly mean PRECC and PRECL
 file_precc_monthly = os.path.join(data_dir, f'ERA5_Global_{year_min}-{year_max}_PRECC_Monthly.nc')

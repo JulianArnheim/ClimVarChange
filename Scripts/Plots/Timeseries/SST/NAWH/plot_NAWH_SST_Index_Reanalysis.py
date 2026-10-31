@@ -125,7 +125,7 @@ for sel_month, mons in months_options.items():
     text_months = sel_month.split()[1]
 
     ### For title only, make ANNUAL blank
-    title_season = '' if text_months == 'ANNUAL' else f'{text_months} '
+    season_prefix = '' if text_months == 'ANNUAL' else f'{text_months} '
 
     ### Figure
     print(f'{text_months}')
@@ -242,7 +242,7 @@ for sel_month, mons in months_options.items():
     plt.axis([1940, 2025, -1.5, 1.5])
 
     ### Title
-    plt.title(rf'\textbf{{{title_season}NORTH ATLANTIC WARMING HOLE INDEX}}', color='k', fontsize=30, y=1.02)
+    plt.title(rf'\textbf{{{season_prefix}NORTH ATLANTIC WARMING HOLE INDEX}}', color='k', fontsize=30, y=1.02)
 
     ### Labels
     plt.xlabel(r'\textbf{Year}', fontsize=15, color='k', labelpad=10)
@@ -291,7 +291,7 @@ for sel_month, mons in months_options.items():
     ### Save figure
     fig_path = os.path.join(fig_dir, f'Reanalysis_NAWH_SST_Index_{text_months}_{year_min}–{year_max}.png')
     plt.savefig(fig_path, dpi=1000)
-    plt.close(fig)
+    plt.close()
 
     ### Progress
     print(f'Check Mark [HH:MM:SS.SS]: {format_time(time.time() - start_time)}\n')

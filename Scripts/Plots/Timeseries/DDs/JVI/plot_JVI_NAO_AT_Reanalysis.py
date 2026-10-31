@@ -83,7 +83,7 @@ for sel_month, mons in months_options.items():
     print(f'{text_months}')
 
     ### For title only, make ANNUAL blank
-    title_season = '' if text_months == 'ANNUAL' else f'{text_months} '
+    season_prefix = '' if text_months == 'ANNUAL' else f'{text_months} '
 
     ### Process data
     JVI_data = JVIs.sel(time=slice(f'{year_min}-01-01', f'{year_max}-12-31')).where(JVIs.time.dt.month.isin(mons), drop=True)
@@ -184,14 +184,14 @@ for sel_month, mons in months_options.items():
     print(f'Correlation between LOWESS smoothed JVI and NAO: {corr_smoothed:+.2f}')
 
     ### Title and annotations
-    plt.title(rf'\textbf{{Jet Variability Index (JVI): {title_season}Atlantic Sector (50°W–40°E)}}', color='k', fontsize=20, y=1)
+    plt.title(rf'\textbf{{Jet Variability Index (JVI): {season_prefix}Atlantic Sector (50°W–40°E)}}', color='k', fontsize=20, y=1)
     ax1.text(.88, .94, f'Smoothed Correlation: {corr_smoothed:+.2f}', transform=ax1.transAxes, ha='right', va='top', color='k', fontsize=13)
     ax1.text(.12, .94, f'{lowess_num}-Year LOWESS Smoothing', transform=ax1.transAxes, ha='left', va='top', color='k', fontsize=13)
 
     ### Save figure
     plt.tight_layout()
     plt.savefig(os.path.join(fig_dir, f'Reanalysis_AT_JVI_NAO_{text_months}_{year_min}–{year_max}.png'), dpi=1000)
-    plt.close(fig)
+    plt.close()
 
     ### Progress
     print(f'Check Mark [HH:MM:SS.SS]: {format_time(time.time() - start_time)}\n')

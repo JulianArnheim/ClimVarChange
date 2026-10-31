@@ -69,10 +69,10 @@ data_dir = os.path.join(base_dir, 'Data')
 ### Years
 year_min, year_max = 1940, 2025
 
-print(f'\n---- Jet Latitude Index (JLI) and Jet Speed Index (JSI) ----\n')
-
 ### Output filename
 out_filename = os.path.join(data_dir, f'ERA5_NA_JLI_JSI_{year_min}-{year_max}_Daily.nc')
+
+print(f'\n---- Jet Latitude Index (JLI) and Jet Speed Index (JSI) ----\n')
 
 ### Build dataset by looping through pressure levels
 data_vars, time_coord = {}, None

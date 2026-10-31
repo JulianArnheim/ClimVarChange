@@ -144,7 +144,7 @@ for sel_month, mons in months_options.items():
     print(f'{text_months}')
 
     ### For title only, make ANNUAL blank
-    title_season = '' if text_months == 'ANNUAL' else f'{text_months} '
+    season_prefix = '' if text_months == 'ANNUAL' else f'{text_months} '
 
     ### Season specification
     BLOs_season = BLOs.sel(time=BLOs['time.month'].isin(mons))
@@ -181,7 +181,7 @@ for sel_month, mons in months_options.items():
             ax.set_ylabel(r'\textbf{Probability}', fontsize=18, labelpad=13, color='k') if i % 2 == 0 else ax.set_ylabel('')
 
         ### Title
-        ax_top.set_title(rf'\textbf{{{title_season}Blocking Index (BLO)}}', color='k', fontsize=36, y=1.01)
+        ax_top.set_title(rf'\textbf{{{season_prefix}Blocking Index (BLO)}}', color='k', fontsize=36, y=1.01)
         ax_top.text(.5, .18, r'\textbf{Northern Hemisphere (180°W–180°E)}', fontsize=20, color='k', ha='center', va='top', transform=ax_top.transAxes)
 
         ### Save figure
@@ -191,7 +191,7 @@ for sel_month, mons in months_options.items():
         suffix = '_letters' if letters else ''
         fig_path = os.path.join(fig_dir, f'Reanalysis_BLO_{text_months}_{first_year}–{year_max}{suffix}.png')
         plt.savefig(fig_path, dpi=1000)
-        plt.close(fig)
+        plt.close()
 
     ### Progress
     print(f'Check Mark [HH:MM:SS.SS]: {format_time(time.time() - start_time)}\n')

@@ -50,8 +50,8 @@ print(f'\n---- North Atlantic Oscillation (NAO) & East Atlantic (EA) Pattern ---
 filename = os.path.join(data_dir, f'CPC_NAO_EA_{year_min}-{year_max}_Monthly.nc')
 teleconnections = xr.open_dataset(filename)
 
-### Extract indices and common valid months
-NAO, EA = xr.align(teleconnections['NAO'], teleconnections['EA'], join='inner')
+### Extract indices over complete DJF winters (Dec of year_min to Feb of year_max) and common valid months
+NAO, EA = xr.align(*[teleconnections[v].sel(time=slice(f'{year_min}-12', f'{year_max}-02')) for v in ('NAO', 'EA')], join='inner')
 valid = NAO.time.dt.month.isin([12, 1, 2]) & np.isfinite(NAO) & np.isfinite(EA)
 NAO, EA = NAO.where(valid, drop=True), EA.where(valid, drop=True)
 common_times, x, y = NAO.time.values, NAO.values, EA.values
@@ -105,7 +105,7 @@ ax.set(xlim=(-4, 4), ylim=(-4, 4))
 
 ### Title, annotations, and labels
 plt.title(r'\textbf{North Atlantic Teleconnection Patterns}', color='k', fontsize=16, y=1.06)
-plt.text(.5, 1.02, f'DJF {year_min}–{year_max}', color='k', fontsize=12, ha='center', transform=plt.gca().transAxes)
+plt.text(.5, 1.02, f'DJF {year_min + 1}–{year_max}', color='k', fontsize=12, ha='center', transform=plt.gca().transAxes)
 plt.xlabel(r'\textbf{NAO}', fontsize=13, color='k', labelpad=8)
 plt.ylabel(r'\textbf{EA}', fontsize=13, color='k', labelpad=8)
 
@@ -119,7 +119,7 @@ annotate_extreme(min_EA_idx, x, y, offset=(-50, -10))
 
 ### Save figure
 ax.set_position([.14, .15, .78, .72])
-plt.savefig(os.path.join(fig_dir, f'Reanalysis_NAO_EA_DJF_{year_min}–{year_max}.png'), dpi=1000)
+plt.savefig(os.path.join(fig_dir, f'Reanalysis_NAO_EA_DJF_{year_min + 1}–{year_max}.png'), dpi=1000)
 
 ### End time
 print(f'---- Script Duration [HH:MM:SS]: {format_time(time.time() - start_time)} ----\n')

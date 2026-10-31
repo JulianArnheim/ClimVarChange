@@ -51,13 +51,13 @@ data_dir = os.path.join(base_dir, 'Data')
 ### Years
 year_min, year_max = 1950, 2025
 
-print(f'\n---- Download CPC Monthly NAO and EA Indices ----\n')
-
 ### CPC data locations
 NAO_site, EA_site = 'https://ftp.cpc.ncep.noaa.gov/wd52dg/data/indices/nao_index.tim', 'https://ftp.cpc.ncep.noaa.gov/wd52dg/data/indices/ea_index.tim'
-print(f'Retrieving CPC NAO and EA monthly indices ({year_min}–{year_max}) ...')
+
+print(f'\n---- Download CPC Monthly NAO and EA Indices ----\n')
 
 ### Download and process NAO index
+print(f'Retrieving CPC NAO and EA monthly indices ({year_min}–{year_max}) ...')
 NAO = load_CPC_index(NAO_site, 'NAO').sel(time=slice(f'{year_min}-01', f'{year_max}-12'))
 print(f'Loaded NAO: {NAO.time.dt.year.min().item()}–{NAO.time.dt.year.max().item()}')
 
@@ -72,4 +72,4 @@ teleconnections.to_netcdf(output_filename)
 print(f'Saved {output_filename}\n')
 
 ### End time
-print(f'---- Script Duration [HH:MM:SS]: {format_time(time.time() - start_time)} ----\n')
+print(f'\n---- Script Duration [HH:MM:SS]: {format_time(time.time() - start_time)} ----\n')

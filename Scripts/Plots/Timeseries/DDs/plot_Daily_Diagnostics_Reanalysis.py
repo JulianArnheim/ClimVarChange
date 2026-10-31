@@ -216,7 +216,7 @@ for start_yr, end_yr in epochs:
         suffix = '_letters' if letters else ''
         fig_path = os.path.join(fig_dir, f'Reanalysis_Daily_Diagnostics_{start_yr}–{end_yr}_Climo_Sectors{suffix}.png')
         plt.savefig(fig_path, dpi=1000)
-        plt.close(fig)
+        plt.close()
 
     ### Progress
     print(f'Check Mark [HH:MM:SS.SS]: {format_time(time.time() - start_time)}\n')

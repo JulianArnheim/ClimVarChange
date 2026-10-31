@@ -257,7 +257,7 @@ for start_year in range(year_min, 1990, 10):
             plt.xlabel(r'\textbf{Latitude [°N]}', color='k', fontsize=15)
             plt.ylabel(r'\textbf{Pressure [hPa]}', color='k', fontsize=15)
 
-            ### Annotation
+            ### Annotations
             season_prefix = '' if text_months == 'ANNUAL' else f'{text_months} '
             plt.text(1, 1.05, rf'\textbf{{{season_prefix}{first_year}–{year_max}}}', fontsize=10, rotation='horizontal', ha='right', va='top', color='k', transform=ax.transAxes)
             plt.text(1, -.12, r'\textbf{\textit{Shading indicates trends are significant at the 95\% confidence level following area- and pressure-weighted FDR correction}}',

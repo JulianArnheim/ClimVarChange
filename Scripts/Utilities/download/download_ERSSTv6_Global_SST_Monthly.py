@@ -72,4 +72,4 @@ for year in range(year_min, year_max + 1):
             os.remove(temp_path)
 
 ### End time
-print(f'---- Script Duration [HH:MM:SS]: {format_time(time.time() - start_time)} ----\n')
+print(f'\n---- Script Duration [HH:MM:SS]: {format_time(time.time() - start_time)} ----\n')

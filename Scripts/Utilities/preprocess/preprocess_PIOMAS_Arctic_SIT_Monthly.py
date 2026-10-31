@@ -27,13 +27,13 @@ data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '
 grid_file = os.path.join(data_dir, 'raw', 'grid.dat.txt')
 output_file = os.path.join(data_dir, f'PIOMAS_Arctic_1979-2025_SIT_Monthly.nc')
 
-print(f'\n---- Preprocess PIOMAS SIT ----\n')
-
 ### Years
 year_min, year_max = 1979, 2025
 
 ### PIOMAS grid size
 nlat, nlon = 120, 360
+
+print(f'\n---- Preprocess PIOMAS SIT ----\n')
 
 ### Load PIOMAS curvilinear grid
 if os.path.exists(grid_file):

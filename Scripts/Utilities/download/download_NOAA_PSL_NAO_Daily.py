@@ -27,10 +27,10 @@ data_dir = os.path.join(base_dir, 'Data')
 ### Years
 year_min, year_max = 1948, 2025
 
-print(f'\n---- Download PSL Daily NAO Index ----\n')
-
 ### NAO index URL
 url = 'https://downloads.psl.noaa.gov/Public/map/teleconnections/nao.reanalysis.t10trunc.1948-present.txt'
+
+print(f'\n---- Download PSL Daily NAO Index ----\n')
 
 print(f'Retrieving NAO index ({year_min}–{year_max}) ...\n')
 
@@ -47,4 +47,4 @@ xr.Dataset({'NAO': ('time', df['NAO'])}, coords={'time': df['time']}).to_netcdf(
 print(f'Saved {output_filename}\n')
 
 ### End time
-print(f'---- Script Duration [HH:MM:SS]: {format_time(time.time() - start_time)} ----\n')
+print(f'\n---- Script Duration [HH:MM:SS]: {format_time(time.time() - start_time)} ----\n')

@@ -209,7 +209,7 @@ for sel_month, mons in months_options.items():
     plt.xlabel(r'\textbf{Latitude [°N]}', color='k', fontsize=15)
     plt.ylabel(r'\textbf{Pressure [hPa]}', color='k', fontsize=15)
 
-    ### Annotations
+    ### Annotation
     season_prefix = '' if text_months == 'ANNUAL' else f'{text_months} '
     plt.text(1, 1.05, rf'\textbf{{{season_prefix}{epoch_1[0]}–{epoch_1[1]}}}', fontsize=10, rotation='horizontal', ha='right', va='top', color='k', transform=ax.transAxes)
 

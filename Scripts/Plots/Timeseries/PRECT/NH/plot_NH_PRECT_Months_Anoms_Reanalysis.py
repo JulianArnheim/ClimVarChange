@@ -53,8 +53,6 @@ fig_dir = os.path.join(base_dir, 'Figures/Timeseries/PRECT/NH/')
 year_min, year_max = 1940, 2025
 epoch = (1981, 2010)
 
-print(f'\n---- Northern Hemisphere Precipitation (PRECT) ----\n')
-
 ### Time specifications
 months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 colors = ['#B0C4DE', '#9ACD32', '#FFC0CB', '#D2691E', '#00FFFF', '#FFA500',
@@ -62,6 +60,8 @@ colors = ['#B0C4DE', '#9ACD32', '#FFC0CB', '#D2691E', '#00FFFF', '#FFA500',
 
 ### Northern hemisphere definition
 NH_min_lat = 0
+
+print(f'\n---- Northern Hemisphere Precipitation (PRECT) ----\n')
 
 ### Load data
 file_precc_monthly = os.path.join(data_dir, f'ERA5_Global_{year_min}-{year_max}_PRECC_Monthly.nc')

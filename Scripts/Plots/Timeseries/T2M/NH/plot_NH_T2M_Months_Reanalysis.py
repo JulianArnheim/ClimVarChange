@@ -48,14 +48,14 @@ fig_dir = os.path.join(base_dir, 'Figures/Timeseries/T2M/NH/')
 ### Years
 year_min, year_max = 1940, 2025
 
-print(f'\n---- Northern Hemisphere Warming (T2M) ----\n')
-
 ### Time specifications
 month_labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan']
 month_positions = [1, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 365]
 
 ### Northern hemisphere definition
 NH_min_lat = 0
+
+print(f'\n---- Northern Hemisphere Warming (T2M) ----\n')
 
 ### Load data
 filename = os.path.join(data_dir, f'ERA5_Global_{year_min}-{year_max}_T2M_Monthly.nc')

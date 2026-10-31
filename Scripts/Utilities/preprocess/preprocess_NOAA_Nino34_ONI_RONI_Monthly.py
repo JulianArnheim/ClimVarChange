@@ -26,13 +26,13 @@ start_time = time.time()
 ### Directory
 data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'Data'))
 
-print(f'\n---- Preprocess ONI and RONI ----\n')
-
 ### Years and files
 year_min, year_max = 1950, 2026
 oni_file = os.path.join(data_dir, 'raw', f'PSL_Nino34_{year_min}-{year_max}_ONI_Monthly_raw.txt')
 roni_file = os.path.join(data_dir, 'raw', f'CPC_Nino34_{year_min}-{year_max}_RONI_Monthly_raw.txt')
 output_file = os.path.join(data_dir, f'NOAA_Nino34_{year_min}-{year_max}_ONI_RONI_Monthly.nc')
+
+print(f'\n---- Preprocess ONI and RONI ----\n')
 
 ### Monthly time axis, each three-month season assigned to its center month (DJF -> January)
 months = pd.date_range(f'{year_min}-01-01', f'{year_max}-12-01', freq='MS')

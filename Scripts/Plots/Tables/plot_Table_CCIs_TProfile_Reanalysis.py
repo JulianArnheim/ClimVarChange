@@ -33,10 +33,10 @@ fig_dir = os.path.join(base_dir, 'Figures/Table/')
 year_min, year_max = 1940, 2025
 epochs = [(1981, 2010), (year_min, year_max)]
 
-print(f'\n---- Climate Change Indices (CCIs) ----\n')
-
 ### Table parameters
 months, regions, sectors = ['ANNUAL', 'DJF', 'JJA'], ['UTW', 'AA', 'PST', 'UPTG', 'LOTG'], ['NH (180°W–180°E)', 'AM (140°W–50°W)', 'AT (50°W–40°E)', 'AS (40°E–130°E)', 'PA (130°E–140°W)']
+
+print(f'\n---- Climate Change Indices (CCIs) ----\n')
 
 ### Load data
 ERA5 = xr.open_dataset(os.path.join(data_dir, f'ERA5_CCIs_{year_min}-{year_max}_Annual.nc'))
@@ -91,7 +91,7 @@ for epoch in epochs:
         ### Save figure
         plt.subplots_adjust(bottom=.01)
         plt.savefig(os.path.join(fig_dir, f'Reanalysis_CCIs_{month}_{epoch_text}.png'), dpi=1000)
-        plt.close(fig)
+        plt.close()
 
     ### Progress
     print(f'Check Mark [HH:MM:SS.SS]: {format_time(time.time() - start_time)}\n')

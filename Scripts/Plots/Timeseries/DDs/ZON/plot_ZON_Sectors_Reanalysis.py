@@ -103,7 +103,7 @@ def plot_panel(ax, year_min, year_max, ZON_data, sector_code, sector_name, y_tic
     ax.set_xlabel(r'\textbf{Year}', fontsize=16, labelpad=10, color='k')
     ax.set_ylabel(r'\textbf{Geopotential Height Difference [gpm]}', fontsize=12, labelpad=13, color='k')
 
-    ### Annotation
+    ### Annotations
     if running_mean_labels:
         x = np.datetime64(f'{end_yr-2}-01-01')
         ax.annotate('Monthly Mean', xy=(x, ylim[1] - 47), color='k', fontsize=12, ha='right', va='bottom')
@@ -118,7 +118,7 @@ base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '
 data_dir = os.path.join(base_dir, 'Data/')
 fig_dir = os.path.join(base_dir, 'Figures/Timeseries/DDs/ZON/')
 
-### Epoch
+### Years
 year_min, year_max = 1940, 2025
 
 print(f'\n---- Zonal Index (ZON) Timeseries ----\n')
@@ -140,7 +140,7 @@ for sel_month, mons in months_options.items():
     text_months = sel_month.split()[1]
 
     ### For title only, make ANNUAL blank
-    title_season = '' if text_months == 'ANNUAL' else f'{text_months} '
+    season_prefix = '' if text_months == 'ANNUAL' else f'{text_months} '
 
     ### Figure
     print(f'{text_months}')
@@ -181,7 +181,7 @@ for sel_month, mons in months_options.items():
             ax.set_ylabel(r'\textbf{Geopotential Height Difference [gpm]}', fontsize=12, labelpad=13, color='k') if i % 2 == 0 else ax.set_ylabel('')
 
         ### Title
-        ax_top.set_title(rf'\textbf{{{title_season}Zonal Index (ZON)}}', color='k', fontsize=36, y=1.01)
+        ax_top.set_title(rf'\textbf{{{season_prefix}Zonal Index (ZON)}}', color='k', fontsize=36, y=1.01)
         ax_top.text(.5, .98, r'\textbf{Northern Hemisphere (180°W–180°E)}', fontsize=20, color='k', ha='center', va='top', transform=ax_top.transAxes)
 
         ### Save figure
@@ -191,7 +191,7 @@ for sel_month, mons in months_options.items():
         suffix = '_letters' if letters else ''
         fig_path = os.path.join(fig_dir, f'Reanalysis_ZON_{text_months}_{year_min}–{year_max}{suffix}.png')
         plt.savefig(fig_path, dpi=1000)
-        plt.close(fig)
+        plt.close()
 
     ### Progress
     print(f'Check Mark [HH:MM:SS.SS]: {format_time(time.time() - start_time)}\n')

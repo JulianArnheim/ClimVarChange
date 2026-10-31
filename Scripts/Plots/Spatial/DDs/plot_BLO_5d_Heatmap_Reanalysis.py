@@ -44,7 +44,7 @@ for start_year, end_year in epochs:
     ### Loop through seasons
     for sel_month, mons in months_options.items():
 
-        ### Season name
+        ### String corrections
         text_months = sel_month.split()[1]
 
         ### First valid year
@@ -134,8 +134,8 @@ for start_year, end_year in epochs:
         plt.title(r'\textbf{Blocking Index (BLO)}', color='k', fontsize=20, y=1.22)
 
         ### Annotations
-        season_label = '' if text_months == 'ANNUAL' else f'{text_months} '
-        ax.text(.83, 1.13, rf'\textbf{{{season_label}{first_year}–{end_year}}}', transform=ax.transAxes, fontsize=10, verticalalignment='bottom')
+        season_prefix = '' if text_months == 'ANNUAL' else f'{text_months} '
+        ax.text(.83, 1.13, rf'\textbf{{{season_prefix}{first_year}–{end_year}}}', transform=ax.transAxes, fontsize=10, verticalalignment='bottom')
         ax.text(-.02, 1.13, rf'{BLO_fraction:.0f}\% of days' if BLO_fraction == 100 else rf'{BLO_fraction:.1f}\% of days', transform=ax.transAxes, fontsize=10, ha='left', va='bottom')
 
         ### Save figure

@@ -28,13 +28,13 @@ base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '
 data_dir = os.path.join(base_dir, 'Data/')
 fig_dir = os.path.join(base_dir, 'Figures/Spatial/NA/Regimes/')
 
-print(f'\n---- Weather Regime Clusters ----\n')
-
 ### Epochs
 epochs = [(1940, 2025), (1981, 2010)]
 
 ### Clusters
 cluster_order = ['NAO+', 'BL', 'NAO-', 'AR']
+
+print(f'\n---- Weather Regime Clusters ----\n')
 
 ### Loop through epochs
 for start_year, end_year in epochs:
@@ -105,7 +105,7 @@ for start_year, end_year in epochs:
                 cs = ax.contour(x, y, cluster_ds['Z500'].values, levels=levels, colors='k', linewidths=.5, transform=ccrs.PlateCarree())
                 ax.clabel(cs, cs.levels, inline=True, fmt='%d', fontsize=5)
 
-                ### Letters
+                ### Letter
                 ax.text(.06, 1.14, rf'\textbf{{{letters[idx]}}}', fontsize=12, ha='right', va='top', transform=ax.transAxes)
 
                 ### Name, color, label according to cluster
@@ -141,7 +141,7 @@ for start_year, end_year in epochs:
             ### Save figure
             suffix = '_blackoutline' if style_name == 'black' else ''
             plt.savefig(os.path.join(fig_dir, f'Reanalysis_Z500_NA_Regimes_{season_name}_{first_year}–{end_year}{suffix}.png'), dpi=1000)
-            plt.close(fig)
+            plt.close()
 
         ### Progress
         print(f'Check Mark [HH:MM:SS.SS]: {format_time(time.time() - start_time)}\n')

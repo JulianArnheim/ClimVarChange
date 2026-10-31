@@ -141,7 +141,7 @@ for start_yr, end_yr in epochs:
     plt.tight_layout()
     fig_path = os.path.join(fig_dir, f'Reanalysis_ZON_{start_yr}–{end_yr}_Climo_Sectors.png')
     plt.savefig(fig_path, dpi=1000)
-    plt.close(fig)
+    plt.close()
 
     ### Progress
     print(f'Check Mark [HH:MM:SS.SS]: {format_time(time.time() - start_time)}\n')

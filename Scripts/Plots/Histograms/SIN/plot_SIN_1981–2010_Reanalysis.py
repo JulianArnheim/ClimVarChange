@@ -40,11 +40,11 @@ fig_dir = os.path.join(base_dir, 'Figures/Histograms/SIN/')
 ### Years
 year_min, year_max = 1981, 2010
 
-print(f'\n---- Sinuosity Index (SIN) ----\n')
-
 ### Decade range for looping
 decade_floor = (year_min // 10) * 10
 decade_ceiling = year_max + 11
+
+print(f'\n---- Sinuosity Index (SIN) ----\n')
 
 ### Load data
 datasets = []

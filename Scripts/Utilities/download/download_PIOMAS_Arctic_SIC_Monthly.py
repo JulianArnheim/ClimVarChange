@@ -30,11 +30,11 @@ data_dir = os.path.join(base_dir, 'Data', 'raw')
 var = 'SIC'
 year_min, year_max = 1979, 2025
 
-print(f'\n---- Download PIOMAS Monthly Sea Ice Concentration (SIC) ----\n')
-
 ### SFTP server and credentials
 host = 'pscfiles.apl.uw.edu'
 username, password, remote_dir = 'anonymous', 'anonymous', '/pscfiles/zhang/PIOMAS/data/v2.1/area/'
+
+print(f'\n---- Download PIOMAS Monthly Sea Ice Concentration (SIC) ----\n')
 
 ### Set up SSH client and SFTP session
 ssh = paramiko.SSHClient()
@@ -72,4 +72,4 @@ sftp.close()
 ssh.close()
 
 ### End time
-print(f'---- Script Duration [HH:MM:SS]: {format_time(time.time() - start_time)} ----\n')
+print(f'\n---- Script Duration [HH:MM:SS]: {format_time(time.time() - start_time)} ----\n')

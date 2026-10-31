@@ -77,14 +77,14 @@ base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '
 data_dir = os.path.join(base_dir, 'Data/')
 fig_dir = os.path.join(base_dir, 'Figures/Spatial/NA/Regimes/')
 
-print(f'\n---- Weather Regime Clusters ----\n')
-
 ### Years and epochs
 year_min, year_max = 1940, 2025
 epochs = [(year_min, year_max), (1981, 2010)]
 
 ### Cluster specifications
 cluster_colors, cluster_order = {'NAO+': 'r', 'BL': 'royalblue', 'NAO-': 'g', 'AR': 'purple'}, ['NAO+', 'BL', 'NAO-', 'AR']
+
+print(f'\n---- Weather Regime Clusters ----\n')
 
 ### Loop through epochs
 for start_year, end_year in epochs:
@@ -169,7 +169,7 @@ for start_year, end_year in epochs:
             cs = ax.contour(x, y, cluster_ds['Z500'].values, levels=np.arange(4500, 6500, 100), colors='k', linewidths=.5, transform=ccrs.PlateCarree())
             ax.clabel(cs, cs.levels, inline=True, fmt='%d', fontsize=5)
 
-            ### Letters
+            ### Letter
             ax.text(.06, 1.18, rf'\textbf{{({letters[letter_idx]})}}', fontsize=11, ha='right', va='top', transform=ax.transAxes)
             letter_idx += 1
 
@@ -219,7 +219,7 @@ for start_year, end_year in epochs:
             ax.set_xticklabels([f'{x:d}' for x in xticks], fontsize=8); ax.set_yticklabels(['0' if y == 0 else f'{y:.2f}'.lstrip('0').rstrip('.') for y in yticks], fontsize=7)
             ax.set_xlim(0, 25); ax.set_ylim(0, .25)
 
-            ### Letters
+            ### Letter
             ax.text(-.19, 1.17, rf'\textbf{{({letters[letter_idx]})}}', transform=ax.transAxes, fontsize=11, ha='left', va='top')
             letter_idx += 1
 
@@ -291,7 +291,7 @@ for start_year, end_year in epochs:
 
         ### Save figure
         plt.savefig(os.path.join(fig_dir, f'Reanalysis_Z500_NA_Regimes_Duration_Transitions_{season_name}_{first_year}–{end_year}.png'), dpi=1000, bbox_inches='tight')
-        plt.close(fig)
+        plt.close()
 
         ### Progress
         print(f'Check Mark [HH:MM:SS.SS]: {format_time(time.time() - start_time)}\n')

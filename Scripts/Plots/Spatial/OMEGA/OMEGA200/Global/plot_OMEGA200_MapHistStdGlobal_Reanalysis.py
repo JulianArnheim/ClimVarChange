@@ -1,5 +1,5 @@
 """
-Plot the 200 hPa vertical pressure velocity (OMEGA200) from ERA5 reanalysis, with negative values (green) for rising motion
+Plot standard deviation of the 200 hPa vertical pressure velocity (OMEGA200) from ERA5 reanalysis
 
 Notes
 -----
@@ -32,9 +32,9 @@ def format_time(seconds):
 start_time = time.time()
 
 ### Directories
-base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', '..'))
+base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', '..', '..'))
 data_dir = os.path.join(base_dir, 'Data/')
-fig_dir = os.path.join(base_dir, 'Figures/Spatial/Global/OMEGA200/Historical/')
+fig_dir = os.path.join(base_dir, 'Figures/Spatial/Global/OMEGA/OMEGA200/Historical Std/')
 
 ### Years and epoch
 year_min, year_max, epoch = 1940, 2025, (1981, 2010)
@@ -66,12 +66,12 @@ for sel_month, mons in months_options.items():
         OMEGA200 = OMEGA200.groupby('winter_year').mean(dim='time').rename({'winter_year': 'year'})
     else:
         OMEGA200 = OMEGA200.groupby('time.year').mean(dim='time')
-    mean_map = OMEGA200.sel(year=slice(epoch[0], epoch[1])).mean(dim='year')
+    epoch_data = OMEGA200.sel(year=slice(epoch[0], epoch[1]))
+    std_map = (epoch_data - xr.polyval(epoch_data['year'], epoch_data.polyfit(dim='year', deg=1).polyfit_coefficients)).std(dim='year')  # std of linearly detrended values
 
-    ### Spatial mean vertical pressure velocity
-    mean_val = cosine_weighted_spatial_mean(mean_map.mean(dim='longitude')).compute().item()
-    min_omega, max_omega = mean_map.min().compute().item(), mean_map.max().compute().item()
-    print(f'Global [Min/Mean/Max]: {min_omega:+.4e} / {mean_val:+.4e} / {max_omega:+.4e} Pa s⁻¹')
+    ### Spatial mean standard deviation of vertical pressure velocity
+    mean_val = cosine_weighted_spatial_mean(std_map.mean(dim='longitude')).compute().item()
+    print(f'Global [Min/Mean/Max]: {std_map.min().compute().item():.4e} / {mean_val:.4e} / {std_map.max().compute().item():.4e} Pa s⁻¹')
 
     ### Figure design
     plt.rc('text', usetex=True)
@@ -95,27 +95,27 @@ for sel_month, mons in months_options.items():
     gridlines.xlabel_style = gridlines.ylabel_style = {'size': 7}
 
     ### Plot
-    x, y = np.meshgrid(mean_map.longitude, mean_map.latitude)
-    cf = ax.contourf(x, y, mean_map, levels=np.linspace(-6e-2, 6e-2, 25), cmap=plt.get_cmap('BrBG_r', lut=192), vmin=-6e-2, vmax=6e-2, transform=ccrs.PlateCarree(), extend='both')
+    x, y = np.meshgrid(std_map.longitude, std_map.latitude)
+    cf = ax.contourf(x, y, std_map, levels=np.linspace(0, 2e-2, 11), cmap='viridis', vmin=0, vmax=2e-2, transform=ccrs.PlateCarree(), extend='max')
 
     ### Colorbar
-    cbar = plt.colorbar(cf, orientation='horizontal', aspect=40, pad=.1, shrink=.8, extend='both')
+    cbar = plt.colorbar(cf, orientation='horizontal', aspect=40, pad=.1, shrink=.8, extend='max')
     cbar.ax.tick_params(labelsize=10, color='dimgray', labelcolor='k', labelright=True, labelleft=False, right=True, left=False)
-    cbar.ax.set_xticks(np.linspace(-6e-2, 6e-2, 7)); cbar.ax.set_xticklabels(['-6', '-4', '-2', '0', '2', '4', '6'])
+    cbar.ax.set_xticks(np.linspace(0, 2e-2, 6)); cbar.ax.set_xticklabels(['0', '4', '8', '12', '16', '20'])
     cbar.ax.xaxis.set_ticks_position('bottom'); cbar.ax.xaxis.set_label_position('bottom')
-    cbar.ax.set_xlabel(r'\textbf{200 hPa Vertical Pressure Velocity [10\textsuperscript{-2} Pa s\textsuperscript{-1}]}', fontsize=13, color='k', labelpad=8)
+    cbar.ax.set_xlabel(r'\textbf{Standard Deviation of 200 hPa Vertical Pressure Velocity [10\textsuperscript{-3} Pa s\textsuperscript{-1}]}', fontsize=11, color='k', labelpad=8)
 
     ### Title
-    plt.title(r'\textbf{VERTICAL PRESSURE VELOCITY}', color='k', fontsize=18, y=1.12)
+    plt.title(r'\textbf{STANDARD DEVIATION OF VERTICAL PRESSURE VELOCITY}', color='k', fontsize=16, y=1.12)
 
-    ### Annotation
+    ### Annotations
     plt.text(.88, 1.05, rf'\textbf{{{"" if text_months == "ANNUAL" else f"{text_months} "}{epoch[0]}–{epoch[1]}}}', fontsize=9, rotation='horizontal', ha='left', va='top', transform=ax.transAxes)
     plt.text(.15, 1.07, rf'\textbf{{{(m := f"{mean_val:.2e}".split("e"))[0]} × 10\textsuperscript{{{int(m[1])}}} Pa s\textsuperscript{{-1}}}}', fontsize=9, ha='right', va='top',
              transform=ax.transAxes, bbox=dict(facecolor='w', edgecolor='k', boxstyle='round,pad=0.35'))
 
     ### Save figure
     plt.subplots_adjust(top=.98, bottom=.03, left=.08, right=.92)
-    plt.savefig(os.path.join(fig_dir, f'Reanalysis_Global_OMEGA200_{text_months}_{epoch[0]}–{epoch[1]}.png'), dpi=1000)
+    plt.savefig(os.path.join(fig_dir, f'Reanalysis_Global_OMEGA200_Std_{text_months}_{epoch[0]}–{epoch[1]}.png'), dpi=1000)
     plt.close()
 
     ### Progress

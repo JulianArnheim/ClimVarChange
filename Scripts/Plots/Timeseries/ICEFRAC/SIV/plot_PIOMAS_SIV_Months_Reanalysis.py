@@ -40,11 +40,11 @@ fig_dir = os.path.join(base_dir, 'Figures/Timeseries/ICEFRAC/SIV/')
 year_crop = 1980
 year_min, year_max = 1979, 2025
 
-print(f'\n---- Arctic Sea Ice Volume ----\n')
-
 ### Time specifications
 month_labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan']
 month_positions = [1, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 365]
+
+print(f'\n---- Arctic Sea Ice Volume ----\n')
 
 ### Load data
 siv = xr.open_dataset(os.path.join(data_dir, f'PIOMAS_Arctic_{year_min}-{year_max}_SIV_Monthly.nc'))['SIV'].sortby('time')
