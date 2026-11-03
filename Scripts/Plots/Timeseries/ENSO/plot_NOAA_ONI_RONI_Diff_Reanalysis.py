@@ -30,9 +30,13 @@ def format_time(seconds):
     return '{:02d}:{:02d}:{:.2f}'.format(hours, minutes, seconds % 60)
 
 def plot_index(ax, years, index, linestyle, lw_neutral, lw_event):
-    ax.plot(years, index, color='k', linestyle=linestyle, linewidth=lw_neutral, zorder=3)
-    ax.plot(years, np.where(index >= .5, index, np.nan), color=nino_color, linestyle=linestyle, linewidth=lw_event, zorder=4)
-    ax.plot(years, np.where(index <= -.5, index, np.nan), color=nina_color, linestyle=linestyle, linewidth=lw_event, zorder=4)
+    x, y = np.asarray(years), np.asarray(index)
+    for c in (-.5, .5):
+        i = np.where((index[:-1] - c) * (index[1:] - c) < 0)[0]  # months just before each crossing of the threshold
+        x, y = np.append(x, x[i] + (c - y[i]) / (y[i + 1] - y[i]) * (x[i + 1] - x[i])), np.append(y, np.full(len(i), c))
+    x, y = x[np.argsort(x)], y[np.argsort(x)]
+    for color, linewidth, zorder, mask in [('k', lw_neutral, 3, np.abs(y) <= .5), (nino_color, lw_event, 4, y >= .5), (nina_color, lw_event, 4, y <= -.5)]:
+        ax.plot(x, np.where(mask, y, np.nan), color=color, linestyle=linestyle, linewidth=linewidth, zorder=zorder)
 
 ### Start time
 start_time = time.time()
@@ -54,11 +58,9 @@ print(f'\n---- Oceanic Niño Index (ONI) and Relative Oceanic Niño Index (RONI)
 seasons = ['DJF', 'JFM', 'FMA', 'MAM', 'AMJ', 'MJJ', 'JJA', 'JAS', 'ASO', 'SON', 'OND', 'NDJ']
 
 ### Load data
-filename = os.path.join(data_dir, f'NOAA_Nino34_{year_min}-{year_max}_ONI_RONI_Monthly.nc')
-ds = xr.open_dataset(filename)
+ds = xr.open_dataset(os.path.join(data_dir, f'NOAA_Nino34_{year_min}-{year_max}_ONI_RONI_Monthly.nc'))
 times = pd.to_datetime(ds['time'].values)
-years = times.year + (times.month - .5) / 12
-ONI, RONI = ds['ONI'].values, ds['RONI'].values
+years, ONI, RONI = times.year + (times.month - .5) / 12, ds['ONI'].values, ds['RONI'].values
 
 ### Latest season of each index
 last_oni, last_roni = np.where(np.isfinite(ONI))[0][-1], np.where(np.isfinite(RONI))[0][-1]
@@ -84,8 +86,7 @@ fig, (ax, ax_diff) = plt.subplots(2, 1, figsize=(12, 7), sharex=True, gridspec_k
 
 ### Adjust axes
 adjust_spines(ax, ['left', 'bottom'])
-ax.spines['bottom'].set_linewidth(2)
-ax.spines['left'].set_linewidth(2)
+ax.spines['bottom'].set_linewidth(2); ax.spines['left'].set_linewidth(2)
 ax.tick_params('both', length=5.5, width=2, which='major', color='dimgray', labelcolor='k', labelsize=11)
 
 ### Ticks
@@ -143,8 +144,7 @@ ax.set_ylabel(r'\textbf{Index [°C]}', fontsize=15, color='k', labelpad=8)
 
 ### Adjust axes
 adjust_spines(ax_diff, ['left', 'bottom'])
-ax_diff.spines['bottom'].set_linewidth(2)
-ax_diff.spines['left'].set_linewidth(2)
+ax_diff.spines['bottom'].set_linewidth(2); ax_diff.spines['left'].set_linewidth(2)
 
 ### Plot RONI minus ONI
 ax_diff.plot(years, RONI - ONI, color='k', linewidth=1.25, zorder=3)
