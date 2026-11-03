@@ -386,9 +386,9 @@ e.g. `bin/run_container.sh Scripts/Utilities/setup_ClimVarChange_Folders.py`.
 `SCRIPTRULES.txt` records the conventions every script follows. Each script opens with a docstring
 naming its sources and author, then runs top to bottom through banner-labelled blocks: imports, helper
 functions in alphabetical order, start time, directories, parameters, loading, computation or plotting,
-saving and end time. Scripts are a multiple of 25 lines long, print fixed opening and closing banners,
-save figures at 1000 dpi and resolve every path from their own location. Shared helpers, such as the
-trend and p-value function, are copied verbatim into each script, so any divergence shows up in a diff.
+saving and end time. Scripts print fixed opening and closing banners, save figures at 1000 dpi and
+resolve every path from their own location. Shared helpers, such as the trend and p-value function,
+are copied verbatim into each script, so any divergence shows up in a diff.
 
 ## Acknowledgments
 
