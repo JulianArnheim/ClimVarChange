@@ -387,8 +387,8 @@ e.g. `bin/run_container.sh Scripts/Utilities/setup_ClimVarChange_Folders.py`.
 naming its sources and author, then runs top to bottom through banner-labelled blocks: imports, helper
 functions, start time, directories, parameters, loading, computation or plotting, saving and end time.
 Scripts print fixed opening and closing banners, save figures at 1000 dpi and resolve every path from
-their own location. The closing banner reports how long the script took to run, in hours, minutes and
-seconds.
+their own location. The closing banner reports the script's run time, and progress messages are printed
+to the console rather than written with the logging module.
 
 ## Acknowledgments
 
