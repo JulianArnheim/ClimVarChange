@@ -90,8 +90,7 @@ ax.spines['bottom'].set_linewidth(2); ax.spines['left'].set_linewidth(2)
 ax.tick_params('both', length=5.5, width=2, which='major', color='dimgray', labelcolor='k', labelsize=11)
 
 ### Ticks
-ax.set_yticks(np.arange(-3, 3.1, 1), [f'{y:.0f}' for y in np.arange(-3, 3.1, 1)], color='k', fontsize=11)
-ax.set_yticks(np.arange(-2.5, 3, .5), minor=True)
+ax.set_yticks(np.arange(-3, 3.1, 1), [f'{y:.0f}' for y in np.arange(-3, 3.1, 1)], color='k', fontsize=11); ax.set_yticks(np.arange(-2.5, 3, .5), minor=True)
 ax.tick_params(axis='y', which='minor', length=3.5, width=1.5, color='dimgray')
 
 ### Domain
@@ -106,8 +105,7 @@ for i, (name, low, high) in enumerate(categories):
 
 ### Threshold and zero lines
 for level in [.5, 1, 1.5, 2, 3]:
-    ax.axhline(level, color='dimgray', linestyle='--', linewidth=.6, alpha=.8, zorder=2)
-    ax.axhline(-level, color='dimgray', linestyle='--', linewidth=.6, alpha=.8, zorder=2)
+    ax.axhline(level, color='dimgray', linestyle='--', linewidth=.6, alpha=.8, zorder=2); ax.axhline(-level, color='dimgray', linestyle='--', linewidth=.6, alpha=.8, zorder=2)
 ax.axhline(0, color='dimgray', linewidth=1, zorder=1)
 
 ### Event names
@@ -115,8 +113,8 @@ ax.text(.5, .955, r'\textbf{El Ni\~no}', transform=ax.transAxes, color=nino_colo
 ax.text(.5, .036, r'\textbf{La Ni\~na}', transform=ax.transAxes, color=nina_color, fontsize=20, ha='center', va='bottom', zorder=5)
 
 ### Plot
-plot_index(ax, years, ONI, '-', 1.25, 2)
-plot_index(ax, years, RONI, (0, (1, .8)), 1.25, 2)
+plot_index(ax, years, ONI, '-', 1.2, 1.5)
+plot_index(ax, years, RONI, (0, (1, .8)), 1.2, 1.5)
 ax.scatter(years[last_oni], ONI[last_oni], s=40, color='gold', edgecolor='k', linewidth=.8, zorder=6)
 ax.annotate(rf'\textbf{{{season_oni}: {latest} °C}}', xy=(1, 1.045), xycoords='axes fraction', ha='right', va='top',
             color='gold', fontsize=12, path_effects=[pe.withStroke(linewidth=1.5, foreground='k')], zorder=8)
@@ -130,13 +128,16 @@ for label, (x, y) in event_labels.items():
 
 ### Legend
 l_handles = [plt.Line2D([0], [0], color='k', linestyle='-', lw=2.5), plt.Line2D([0], [0], color='k', linestyle=(0, (1, .8)), lw=1.5)]
-ax.legend(l_handles, ['ONI', 'RONI'], shadow=False, fontsize=11, loc='upper left', bbox_to_anchor=(.01, 1.01), fancybox=True, ncol=1, frameon=False, handlelength=2)
+ax.legend(l_handles, ['ONI', 'RONI'], shadow=False, fontsize=11, loc='upper left', bbox_to_anchor=(.01, 1), fancybox=True, ncol=1, frameon=False, handlelength=2)
 
 ### Title
-ax.set_title(r'\textbf{EL NI\~NO SOUTHERN OSCILLATION: OCEANIC NI\~NO INDEX}', color='k', y=1.07, fontsize=29)
+ax.set_title(r'\textbf{EL NI\~NO SOUTHERN OSCILLATION: OCEANIC NI\~NO INDEX}', color='k', y=1.075, fontsize=29)
 
 ### Label
 ax.set_ylabel(r'\textbf{Index [°C]}', fontsize=15, color='k', labelpad=8)
+
+### Data source annotation
+ax.text(0, 1.025, r'\textbf{DATA:} NOAA PSL (ONI, ERSSTv6), NOAA CPC (RONI, ERSSTv5). 3-month running means, centered.', transform=ax.transAxes, color='dimgray', fontsize=6, ha='left', va='top')
 
 ###########################################
 ### Bottom panel : RONI minus ONI index ###
@@ -158,8 +159,7 @@ ax_diff.axhline(0, color='dimgray', linewidth=1, zorder=2)
 ### Ticks
 ax_diff.set_xticks(np.arange(1950, 2031, 5), np.arange(1950, 2031, 5), color='k')
 ax_diff.set_yticks([-.9, 0, .9], ['-.9', '0', '+.9'], color='k', fontsize=11); ax_diff.set_yticks([-.6, -.3, .3, .6], minor=True)
-ax_diff.tick_params('both', length=5.5, width=2, which='major', color='dimgray', labelcolor='k', labelsize=11)
-ax_diff.tick_params(axis='y', which='minor', length=3.5, width=1.5, color='dimgray')
+ax_diff.tick_params('both', length=5.5, width=2, which='major', color='dimgray', labelcolor='k', labelsize=11); ax_diff.tick_params(axis='y', which='minor', length=3.5, width=1.5, color='dimgray')
 
 ### Domain
 ax_diff.set_ylim([-.9, .9])

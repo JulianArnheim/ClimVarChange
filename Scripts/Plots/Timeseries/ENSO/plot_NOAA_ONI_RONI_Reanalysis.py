@@ -58,8 +58,7 @@ print(f'\n---- Oceanic Niño Index (ONI) and Relative Oceanic Niño Index (RONI)
 seasons = ['DJF', 'JFM', 'FMA', 'MAM', 'AMJ', 'MJJ', 'JJA', 'JAS', 'ASO', 'SON', 'OND', 'NDJ']
 
 ### Load data
-filename = os.path.join(data_dir, f'NOAA_Nino34_{year_min}-{year_max}_ONI_RONI_Monthly.nc')
-ds = xr.open_dataset(filename)
+ds = xr.open_dataset(os.path.join(data_dir, f'NOAA_Nino34_{year_min}-{year_max}_ONI_RONI_Monthly.nc'))
 times = pd.to_datetime(ds['time'].values)
 years, ONI, RONI = times.year + (times.month - .5) / 12, ds['ONI'].values, ds['RONI'].values
 
@@ -99,11 +98,9 @@ ax.axis([year_min, 2030, -3, 3])
 ### Strength category shading and labels
 for i, (name, low, high) in enumerate(categories):
     for sign, color in [(1, nino_color), (-1, nina_color)]:
-        horizontal_shading, plot_shading = .05 + .04 * i, .4 + .2 * i
-        ax.axhspan(sign * low, sign * high, color=color, alpha=horizontal_shading, linewidth=0, zorder=0)
+        ax.axhspan(sign * low, sign * high, color=color, alpha=.05 + .04 * i, linewidth=0, zorder=0)
         color_transform = transforms.blended_transform_factory(ax.transAxes, ax.transData)
-        height = sign * (low + high) / 2
-        plt.text(1.005, height, rf'\textbf{{{name}}}', transform=color_transform, color=color, alpha=plot_shading, fontsize=10, va='center', ha='left')
+        plt.text(1.005, sign * (low + high) / 2, rf'\textbf{{{name}}}', transform=color_transform, color=color, alpha=.4 + .2 * i, fontsize=10, va='center', ha='left')
 
 ### Threshold lines
 for level in [.5, 1, 1.5, 2, 3]:
@@ -118,8 +115,8 @@ plt.text(.5, .955, r'\textbf{El Ni\~no}', transform=ax.transAxes, color=nino_col
 plt.text(.5, .045, r'\textbf{La Ni\~na}', transform=ax.transAxes, color=nina_color, fontsize=20, ha='center', va='bottom', zorder=5)
 
 ### Plot
-plot_index(ax, years, RONI, (0, (1, .8)), 1.25, 2)
-plot_index(ax, years, ONI, '-', 1.25, 2)
+plot_index(ax, years, RONI, (0, (1, .8)), 1.2, 1.5)
+plot_index(ax, years, ONI, '-', 1.2, 1.5)
 plt.scatter(years[last_oni], ONI[last_oni], s=40, color='gold', edgecolor='k', linewidth=.8, zorder=6)
 ax.annotate(rf'\textbf{{{season_oni}: {latest} °C}}', xy=(1, 1.042), xycoords='axes fraction', ha='right', va='top',
             color='gold', fontsize=12, path_effects=[pe.withStroke(linewidth=1.5, foreground='k')], zorder=8)
@@ -133,13 +130,16 @@ for label, (x, y) in event_labels.items():
 
 ### Legend
 l_handles = [plt.Line2D([0], [0], color='k', linestyle='-', lw=2.5), plt.Line2D([0], [0], color='k', linestyle=(0, (1, .8)), lw=1.5)]
-plt.legend(l_handles, ['ONI', 'RONI'], shadow=False, fontsize=11, loc='upper left', bbox_to_anchor=(.01, 1.01), fancybox=True, ncol=1, frameon=False, handlelength=2)
+plt.legend(l_handles, ['ONI', 'RONI'], shadow=False, fontsize=11, loc='upper left', bbox_to_anchor=(.01, 1), fancybox=True, ncol=1, frameon=False, handlelength=2)
 
 ### Title
-plt.title(r'\textbf{EL NI\~NO SOUTHERN OSCILLATION: OCEANIC NI\~NO INDEX}', color='k', y=1.06, fontsize=28)
+plt.title(r'\textbf{EL NI\~NO SOUTHERN OSCILLATION: OCEANIC NI\~NO INDEX}', color='k', y=1.065, fontsize=28)
 
 ### Label
 plt.ylabel(r'\textbf{Index [°C]}', fontsize=15, color='k', labelpad=8)
+
+### Data source annotation
+ax.text(0, 1.025, r'\textbf{DATA:} NOAA PSL (ONI, ERSSTv6), NOAA CPC (RONI, ERSSTv5). 3-month running means, centered.', transform=ax.transAxes, color='dimgray', fontsize=6, ha='left', va='top')
 
 ### Save figure
 plt.tight_layout()
