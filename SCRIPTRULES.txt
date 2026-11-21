@@ -51,8 +51,8 @@ TIER 1
        ### Left panel : Jet Latitude Index (JLI) ###
        #############################################
    Steps are used in Analysis/calc_BLO_Sectors_5d and calc_CCIs. Panels are used in Plots/Histograms/JLI,
-   plot_NOAA_ONI_RONI_Diff_Reanalysis.py, plot_Daily_Diagnostics_Reanalysis.py and
-   plot_Z500_MapNARegimes_Duration_Transitions_Reanalysis.py. A hash box is preceded by one blank line, like any banner.
+   plot_NOAA_ONI_RONI_Diff_Reanalysis.py, plot_NOAA_ONI_RONI_Diff_Events_Reanalysis.py, plot_Daily_Diagnostics_Reanalysis.py
+   and plot_Z500_MapNARegimes_Duration_Transitions_Reanalysis.py. A hash box is preceded by one blank line, like any banner.
 
 5. TIMING BOILERPLATE
    Every script defines a local format_time(seconds) helper, sets start_time = time.time() under "### Start time",

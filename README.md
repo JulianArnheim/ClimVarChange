@@ -1,8 +1,7 @@
 # ClimVarChange
 
-Scripts for computing and visualizing diagnostics of climate variability and change, with a focus
-on Arctic amplification, midlatitude jet stream and blocking behavior, and their linkages, built on
-reanalysis data.
+Scripts for computing and visualizing diagnostics of climate variability and change, with a focus on
+Arctic amplification, midlatitude jet stream and blocking behavior, and their linkages, built on reanalysis data.
 
 ## Overview
 
@@ -85,7 +84,8 @@ ClimVarChange/
 │       ├── Tables/
 │       ├── Timeseries/           plot_CCIs, plot_Z500_NARegimes at the folder root
 │       │   ├── DDs/{BLO,JVI,SIN,ZON}/
-│       │   ├── ENSO/             ONI and RONI with El Niño/La Niña strength categories
+│       │   ├── ENSO/             ONI and RONI with El Niño/La Niña strength categories, RONI minus ONI,
+│       │   │                     and JJA-to-JJA evolution of major El Niño events
 │       │   ├── ICEFRAC/{SIA,SIE,SIV}/
 │       │   ├── NAO/              Monthly CPC NAO timeseries and animation
 │       │   ├── PRECT/{Arctic,Global,NH}/
