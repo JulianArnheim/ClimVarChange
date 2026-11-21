@@ -152,17 +152,17 @@ ax_diff.plot(years, RONI - ONI, color='k', linewidth=1.25, zorder=3)
 ax_diff.scatter(years[last_both], RONI[last_both] - ONI[last_both], s=40, color='gold', edgecolor='k', linewidth=.8, zorder=6)
 
 ### Horizontal lines
-for level in np.arange(-.9, .91, .3):
+for level in np.arange(-.8, .81, .4):
     ax_diff.axhline(level, color='dimgray', linestyle='--', linewidth=.6, alpha=.8, zorder=1)
 ax_diff.axhline(0, color='dimgray', linewidth=1, zorder=2)
 
 ### Ticks
 ax_diff.set_xticks(np.arange(1950, 2031, 5), np.arange(1950, 2031, 5), color='k')
-ax_diff.set_yticks([-.9, 0, .9], ['-.9', '0', '+.9'], color='k', fontsize=11); ax_diff.set_yticks([-.6, -.3, .3, .6], minor=True)
+ax_diff.set_yticks([-.8, 0, .8], ['-.8', '0', '+.8'], color='k', fontsize=11); ax_diff.set_yticks([-.4, .4], minor=True)
 ax_diff.tick_params('both', length=5.5, width=2, which='major', color='dimgray', labelcolor='k', labelsize=11); ax_diff.tick_params(axis='y', which='minor', length=3.5, width=1.5, color='dimgray')
 
 ### Domain
-ax_diff.set_ylim([-.9, .9])
+ax_diff.set_ylim([-.8, .8])
 
 ### Label
 ax_diff.set_ylabel(r'\textbf{RONI $-$ ONI [°C]}', fontsize=12, color='k', labelpad=8)
