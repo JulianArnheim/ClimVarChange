@@ -99,7 +99,7 @@ plt.rc('ytick', color='dimgray')
 
 ### Create figure
 fig = plt.figure(figsize=(12, 10))
-grid = fig.add_gridspec(5, 2, height_ratios=[52, 9.5, 15, 16.5, 33], hspace=0, wspace=.14, bottom=.07, top=.905)  # panels 52/15/33, rows 2 and 4 are gaps
+grid = fig.add_gridspec(5, 2, height_ratios=[55, 9.5, 14, 16.5, 31], hspace=0, wspace=.14, bottom=.07, top=.905)  # panels 55/14/31, rows 2 and 4 are gaps
 ax = fig.add_subplot(grid[0, :])
 ax_diff = fig.add_subplot(grid[2, :], sharex=ax)
 ax_oni, ax_roni = fig.add_subplot(grid[4, 0]), fig.add_subplot(grid[4, 1])
@@ -197,28 +197,28 @@ ax_diff.set_ylabel(r'\textbf{RONI $-$ ONI [°C]}', fontsize=12, color='k', label
 ####################################################################
 
 for ax_event, name in [(ax_oni, 'ONI'), (ax_roni, 'RONI')]:
-    series, last = index_series[name], (last_oni if name == 'ONI' else last_roni)
+    series, last, linestyle = index_series[name], (last_oni if name == 'ONI' else last_roni), ('-' if name == 'ONI' else '--')
 
     ### Adjust axes
     adjust_spines(ax_event, ['left', 'bottom'])
-    ax_event.spines['bottom'].set_linewidth(2)
-    ax_event.spines['left'].set_linewidth(2)
+    ax_event.spines['bottom'].set_linewidth(2); ax_event.spines['left'].set_linewidth(2)
 
     ### Strength category shading, threshold lines and zero line
     for i, (_, low, high) in enumerate(categories):
-        ax_event.axhspan(low, high, color=nino_color, alpha=.05 + .04 * i, linewidth=0, zorder=0)
-        ax_event.axhspan(-high, -low, color=nina_color, alpha=.05 + .04 * i, linewidth=0, zorder=0)
+        ax_event.axhspan(low, high, color=nino_color, alpha=.05 + .04 * i, linewidth=0, zorder=0); ax_event.axhspan(-high, -low, color=nina_color, alpha=.05 + .04 * i, linewidth=0, zorder=0)
     for level in [-1.5, -1, -.5, .5, 1, 1.5, 2, 2.5, 3]:
         ax_event.axhline(level, color='dimgray', linestyle='--', linewidth=.6, alpha=.8, zorder=1)
     ax_event.axhline(0, color='dimgray', linewidth=1, zorder=2)
 
-    ### Plot major El Niño events, JJA of year 1 (x = 0) to JJA of year 2 (x = 12)
+    ### Plot major El Niño events with a dot at each peak, JJA of year 1 (x = 0) to JJA of year 2 (x = 12)
     for y in colors:
-        ax_event.plot(np.arange(13), series.loc[f'{y}-07-01':f'{y + 1}-07-01'].values, color=colors[y], linewidth=1.5, zorder=3)
+        event = series.loc[f'{y}-07-01':f'{y + 1}-07-01'].values
+        ax_event.plot(np.arange(13), event, color=colors[y], linestyle=linestyle, linewidth=1.5, zorder=3)
+        ax_event.scatter(np.nanargmax(event), np.nanmax(event), s=25, color=colors[y], linewidth=0, zorder=4)
 
     ### Plot current event
     current = series.loc[f'{year_now}-07-01':times[last]].values
-    ax_event.plot(np.arange(len(current)), current, color=current_color, linewidth=3, zorder=5)
+    ax_event.plot(np.arange(len(current)), current, color=current_color, linestyle=linestyle, linewidth=3, zorder=5)
     ax_event.scatter(len(current) - 1, current[-1], s=40, color='gold', edgecolor='k', linewidth=.8, zorder=6)
 
     ### Ticks
